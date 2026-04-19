@@ -149,17 +149,58 @@ async function verify() {
         log.warn(`  NOTE: ${invalidProv} rows have free-text province codes (e.g. "Ontario", "N/A") - source data variance`);
       }
 
-      // Agreement values: negative values are valid (amendments reducing amounts)
+      // Agreement values: TBS spec says "must be greater than 0". Negatives
+      // are used by some departments as termination/reversal markers (de
+      // facto convention on amendment rows), and zeros appear in source data.
+      // Both violate spec — we surface the counts but do not fail the check.
       const negativeValRes = await client.query(`
-        SELECT COUNT(*) AS cnt FROM fed.grants_contributions
-        WHERE agreement_value IS NOT NULL AND agreement_value < 0
+        SELECT
+          COUNT(*) FILTER (WHERE agreement_value < 0) AS negative_total,
+          COUNT(*) FILTER (WHERE agreement_value < 0 AND is_amendment) AS negative_on_amendments,
+          COUNT(*) FILTER (WHERE agreement_value < 0 AND NOT is_amendment) AS negative_on_originals,
+          COUNT(*) FILTER (WHERE agreement_value = 0) AS zero_values
+        FROM fed.grants_contributions
       `);
-      const negativeVals = parseInt(negativeValRes.rows[0].cnt, 10);
+      const { negative_total, negative_on_amendments, negative_on_originals, zero_values } =
+        negativeValRes.rows[0];
+      const negativeVals = parseInt(negative_total, 10);
       const negTolerance = Math.ceil(totalCount * 0.01); // 1%
       check('Negative agreement values within tolerance', negativeVals <= negTolerance,
         `${negativeVals.toLocaleString()} negative values (tolerance: ${negTolerance.toLocaleString()})`);
-      if (negativeVals > 0) {
-        log.warn(`  NOTE: ${negativeVals.toLocaleString()} rows have negative agreement_value (amendments/corrections) - expected`);
+      if (negativeVals > 0 || parseInt(zero_values, 10) > 0) {
+        log.warn(`  NOTE: TBS spec says agreement_value "must be greater than 0". Source data contains:`);
+        log.warn(`    - ${parseInt(negative_total, 10).toLocaleString()} negative values`
+          + ` (${parseInt(negative_on_amendments, 10).toLocaleString()} on amendments,`
+          + ` ${parseInt(negative_on_originals, 10).toLocaleString()} on originals)`);
+        log.warn(`    - ${parseInt(zero_values, 10).toLocaleString()} zero values`);
+        log.warn(`  Carried through as-published — not fixed on import.`);
+      }
+
+      // ref_number source-defect surfacing (TBS: "unique reference number
+      // given to each entry"). Report-only — we do not modify the data.
+      const refDefectsRes = await client.query(`
+        SELECT
+          (SELECT COUNT(*) FROM (
+             SELECT ref_number FROM fed.grants_contributions
+             WHERE ref_number IS NOT NULL
+             GROUP BY ref_number
+             HAVING COUNT(DISTINCT COALESCE(recipient_business_number,'') || '|' ||
+                                   COALESCE(recipient_legal_name,'')) > 1
+           ) t) AS cross_recipient_refs,
+          (SELECT COUNT(*) FROM (
+             SELECT ref_number, amendment_number FROM fed.grants_contributions
+             WHERE ref_number IS NOT NULL
+             GROUP BY ref_number, amendment_number
+             HAVING COUNT(*) > 1
+           ) t) AS duplicate_pairs
+      `);
+      const crossRefs = parseInt(refDefectsRes.rows[0].cross_recipient_refs, 10);
+      const dupPairs = parseInt(refDefectsRes.rows[0].duplicate_pairs, 10);
+      if (crossRefs > 0 || dupPairs > 0) {
+        log.warn(`  NOTE: ref_number defects vs TBS "unique per entry" spec:`);
+        log.warn(`    - ${crossRefs.toLocaleString()} ref_numbers appear under >1 recipient`);
+        log.warn(`    - ${dupPairs.toLocaleString()} (ref_number, amendment_number) pairs duplicate`);
+        log.warn(`  See docs/DATA_DICTIONARY.md "Known source defects".`);
       }
 
       // Multiple departments present

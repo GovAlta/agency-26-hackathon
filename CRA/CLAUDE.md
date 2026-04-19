@@ -4,7 +4,7 @@ This file provides context and skills for AI agents (Claude Code, Copilot, etc.)
 
 ## Project Overview
 
-This is a hackathon package containing 5 years (2020-2024) of CRA T3010 charity disclosure data loaded into PostgreSQL (~7.3M rows across 35 tables). It includes a deterministic analysis pipeline for detecting circular gifting patterns and scoring accountability risk.
+This is a hackathon package containing 5 years (2020-2024) of CRA T3010 charity disclosure data loaded into PostgreSQL (~7.3M raw T3010 rows + ~1.3M pre-computed analysis rows = ~8.6M total, across 46 tables + 3 views: 6 lookup, 19 raw-data, 21 analysis). It includes a deterministic analysis pipeline for detecting circular gifting patterns and scoring accountability risk.
 
 ## Key Commands
 
@@ -12,7 +12,8 @@ This is a hackathon package containing 5 years (2020-2024) of CRA T3010 charity 
 # Data pipeline
 npm run setup              # Full data load (migrate + seed + fetch + import + verify)
 # Analysis pipeline (deterministic)
-npm run analyze:all        # loops + SCC + partitioned + score (loops takes ~2hrs for 6-hop)
+npm run analyze:all        # Full pipeline: loops → scc → partitioned → johnson → matrix → financial → score (~2 hrs, dominated by 6-hop loops)
+npm run analyze:full       # drop:loops --yes + analyze:all — clean-slate rerun
 
 # Interactive deep dives
 npm run lookup -- --name "charity name"    # Network analysis

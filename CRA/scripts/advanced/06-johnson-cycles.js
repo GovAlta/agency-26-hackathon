@@ -332,7 +332,9 @@ async function main() {
   const client = await db.getClient();
 
   try {
-    if (args.migrate) await migrate(client);
+    // migrate() is idempotent (CREATE TABLE / INDEX IF NOT EXISTS) so we
+    // always run it — no --migrate flag required, survives drop-loop-tables.
+    await migrate(client);
 
     // Load graph
     const graph = await loadGraph(client);

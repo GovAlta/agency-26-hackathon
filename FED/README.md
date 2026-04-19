@@ -16,7 +16,10 @@ This pipeline downloads, loads, verifies, and analyzes the **Proactive Publicati
 # Install dependencies
 npm install
 
-# Full pipeline (migrate -> seed -> fetch -> import -> fix-quality -> verify)
+# Full pipeline (migrate -> seed -> fetch -> import -> fix-quality -> verify).
+# Run steps in this order — fix-quality populates the `is_amendment` flag
+# used by the analytical views declared in migrate (defaults to false on a
+# fresh install, then updated from `amendment_number` during fix-quality).
 npm run setup
 
 # Run all advanced analysis

@@ -156,7 +156,7 @@ app.get('/api/entity/:id/cra-years', async (req, res) => {
 
     // Pull every year where CRA has data for this BN root. We key on
     // fpe (fiscal period end) which is consistent across sub-tables.
-    const [ident, findet, fingen, dirs, comp, progs] = await Promise.all([
+    const [ident, findet, fingen, dirs, comp, progs, foundation, gifts, dq] = await Promise.all([
       pool.query(`
         SELECT bn, fiscal_year, legal_name, account_name, designation, category,
                sub_category, city, province, postal_code, registration_date
@@ -172,12 +172,17 @@ app.get('/api/entity/:id/cra-years', async (req, res) => {
                field_4540 AS revenue_government,
                field_4570 AS revenue_investment,
                field_4650 AS revenue_other,
+               field_4655 AS revenue_other_specify,
                field_5100 AS total_expenditures,
                field_5000 AS program_spending,
                field_5050 AS gifts_to_donees,
+               field_4920 AS expense_other,
+               field_4930 AS expense_other_specify,
                field_4200 AS assets,
                field_4250 AS liabilities,
-               field_4020 AS cash
+               field_4020 AS cash_or_accrual,
+               field_4400 AS borrowed_non_arms_length,
+               field_4490 AS issued_tax_receipts
         FROM cra.cra_financial_details
         WHERE LEFT(bn, 9) = $1 ORDER BY fpe DESC
       `, [bn]),
@@ -185,7 +190,63 @@ app.get('/api/entity/:id/cra-years', async (req, res) => {
         SELECT bn, fpe, EXTRACT(YEAR FROM fpe)::int AS yr,
                program_area_1, program_area_2, program_area_3,
                program_percentage_1, program_percentage_2, program_percentage_3,
-               field_1570, field_1600, field_1610, field_1620
+               program_description_1, program_description_2, program_description_3,
+               field_1570 AS wound_up,
+               field_1600 AS is_foundation,
+               field_1800 AS active_during_fiscal_year,
+               field_2000 AS gifts_to_donees_flag,
+               field_2100 AS activities_outside_canada_flag,
+               -- Fundraising methods (Section C, line C6)
+               field_2500 AS fr_advertisements,
+               field_2510 AS fr_auctions,
+               field_2530 AS fr_collection_plate,
+               field_2540 AS fr_door_to_door,
+               field_2550 AS fr_draws_lotteries,
+               field_2560 AS fr_dinners_galas,
+               field_2570 AS fr_fundraising_sales,
+               field_2575 AS fr_internet,
+               field_2580 AS fr_mail_campaigns,
+               field_2590 AS fr_planned_giving,
+               field_2600 AS fr_corporate_sponsors,
+               field_2610 AS fr_targeted_contacts,
+               field_2620 AS fr_telephone_tv,
+               field_2630 AS fr_tournaments,
+               field_2640 AS fr_cause_related,
+               field_2650 AS fr_other,
+               field_2660 AS fr_other_specify,
+               -- External fundraisers (line C7)
+               field_2700 AS paid_external_fundraisers,
+               field_5450 AS external_fr_gross_revenue,
+               field_5460 AS external_fr_amounts_paid,
+               field_2730 AS ext_fr_commissions,
+               field_2740 AS ext_fr_bonuses,
+               field_2750 AS ext_fr_finder_fees,
+               field_2760 AS ext_fr_set_fee,
+               field_2770 AS ext_fr_honoraria,
+               field_2780 AS ext_fr_other,
+               field_2790 AS ext_fr_other_specify,
+               field_2800 AS ext_fr_issued_receipts,
+               -- Other flags
+               field_3200 AS compensated_directors,
+               field_3400 AS has_employees,
+               field_3900 AS foreign_donations_10k,
+               field_4000 AS received_noncash_gifts,
+               field_5800 AS acquired_non_qualifying_security,
+               field_5810 AS donor_used_property,
+               field_5820 AS issued_receipts_for_other,
+               field_5830 AS partnership_holdings,
+               -- Grants to non-qualified donees (v26+ grantees)
+               field_5840 AS made_grants_to_nq_donees,
+               field_5841 AS grants_over_5k,
+               field_5842 AS grantees_under_5k_count,
+               field_5843 AS grantees_under_5k_amount,
+               -- Donor Advised Funds (v27+)
+               field_5850 AS large_unused_property,
+               field_5860 AS held_daf,
+               field_5861 AS daf_account_count,
+               field_5862 AS daf_total_value,
+               field_5863 AS daf_donations_received,
+               field_5864 AS daf_qualifying_disbursements
         FROM cra.cra_financial_general
         WHERE LEFT(bn, 9) = $1 ORDER BY fpe DESC
       `, [bn]),
@@ -209,6 +270,63 @@ app.get('/api/entity/:id/cra-years', async (req, res) => {
         FROM cra.cra_charitable_programs
         WHERE LEFT(bn, 9) = $1 ORDER BY fpe DESC
       `, [bn]),
+      // Schedule 1 — foundations only (most charities have no row here)
+      pool.query(`
+        SELECT bn, fpe, EXTRACT(YEAR FROM fpe)::int AS yr,
+               field_100 AS acquired_corp_control,
+               field_110 AS incurred_debts,
+               field_120 AS held_non_qualifying_investments,
+               field_130 AS owned_more_than_2pct_shares,
+               field_111 AS restricted_funds_total,
+               field_112 AS restricted_funds_not_permitted_to_spend
+        FROM cra.cra_foundation_info
+        WHERE LEFT(bn, 9) = $1 ORDER BY fpe DESC
+      `, [bn]).catch(() => ({ rows: [] })),
+      // Schedule 5 — gifts in kind received
+      pool.query(`
+        SELECT bn, fpe, EXTRACT(YEAR FROM fpe)::int AS yr,
+               field_500 AS gik_artwork_wine_jewellery,
+               field_505 AS gik_building_materials,
+               field_510 AS gik_clothing_furniture_food,
+               field_515 AS gik_vehicles,
+               field_520 AS gik_cultural_properties,
+               field_525 AS gik_ecological_properties,
+               field_530 AS gik_life_insurance,
+               field_535 AS gik_medical_equipment,
+               field_540 AS gik_privately_held_securities,
+               field_545 AS gik_machinery_equipment,
+               field_550 AS gik_publicly_traded_securities,
+               field_555 AS gik_books,
+               field_560 AS gik_other,
+               field_565 AS gik_other_specify,
+               field_580 AS gik_total_receipted_amount
+        FROM cra.cra_gifts_in_kind
+        WHERE LEFT(bn, 9) = $1 ORDER BY fpe DESC
+      `, [bn]).catch(() => ({ rows: [] })),
+      // Schedule 8 — disbursement quota (v27+, 2024 data)
+      pool.query(`
+        SELECT bn, fpe, EXTRACT(YEAR FROM fpe)::int AS yr,
+               field_805 AS dq_avg_property_value,
+               field_810 AS dq_permitted_accumulation,
+               field_815 AS dq_line_3,
+               field_820 AS dq_req_current_under_1m,
+               field_825 AS dq_excess_over_1m,
+               field_830 AS dq_5pct_over_1m,
+               field_835 AS dq_total_over_1m,
+               field_840 AS dq_req_current,
+               field_845 AS dq_charitable_activities_5000,
+               field_850 AS dq_grants_5045,
+               field_855 AS dq_gifts_to_donees_5050,
+               field_860 AS dq_total_disbursed,
+               field_865 AS dq_excess_or_shortfall,
+               field_870 AS dq_next_avg_property,
+               field_875 AS dq_next_under_1m,
+               field_880 AS dq_next_excess,
+               field_885 AS dq_next_5pct,
+               field_890 AS dq_next_total
+        FROM cra.cra_disbursement_quota
+        WHERE LEFT(bn, 9) = $1 ORDER BY fpe DESC
+      `, [bn]).catch(() => ({ rows: [] })),
     ]);
 
     // Group by year.
@@ -227,6 +345,9 @@ app.get('/api/entity/:id/cra-years', async (req, res) => {
     dirs.rows.forEach(r => add(dirs.rows, 'directors', r));
     comp.rows.forEach(r => add(comp.rows, 'compensation', r));
     progs.rows.forEach(r => add(progs.rows, 'programs', r));
+    foundation.rows.forEach(r => add(foundation.rows, 'foundation', r));
+    gifts.rows.forEach(r => add(gifts.rows, 'gifts_in_kind', r));
+    dq.rows.forEach(r => add(dq.rows, 'disbursement_quota', r));
 
     const years = Object.values(byYear).sort((a, b) => b.year - a.year);
     res.json({ years, bn });
@@ -620,7 +741,8 @@ app.get('/api/entity/:id/international', async (req, res) => {
         WHERE LEFT(bn, 9) = $1 ORDER BY fpe DESC, item_value DESC NULLS LAST LIMIT 50
       `, [bn]).catch(() => ({ rows: [] })),
       pool.query(`
-        SELECT EXTRACT(YEAR FROM fpe)::int AS yr, recipient_name, purpose, cash_amount, non_cash_amount
+        SELECT EXTRACT(YEAR FROM fpe)::int AS yr, recipient_name, purpose,
+               cash_amount, non_cash_amount, country
         FROM cra.cra_non_qualified_donees
         WHERE LEFT(bn, 9) = $1 ORDER BY fpe DESC, cash_amount DESC NULLS LAST LIMIT 100
       `, [bn]).catch(() => ({ rows: [] })),

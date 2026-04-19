@@ -140,6 +140,20 @@ For each active entity, this stage builds:
 
 The compile step is fast (2-5 minutes for ~800K records). It updates rather than replaces, so re-running safely refreshes stale derived fields.
 
+### Stage 8 — Donee-name trigram fallback (`10-donee-trigram-fallback.js`) — *Tier 6 enrichment*
+
+`cra.cra_qualified_donees` is the table where each T3010 filer reports gifts to other charities. About **6.4%** of those rows can't be BN-anchored (malformed BN, null BN, or BN that isn't in `cra_identification`), and their `donee_name` text doesn't exact-norm match an existing golden record's canonical name — so they slip through Stages 1–7 unlinked.
+
+Stage 8 recovers them using a trigram-fuzzy lookup against the **authoritative catalog** — only golden records that have a primary-source link (`cra_identification`, `ab_non_profit`, or `fed.grants_contributions` with BN). That restriction is the chicken-and-egg guard: lookup targets are guaranteed to have existed *before* any donee row was processed, so no feedback loop forms.
+
+Three phases, idempotent and resumable:
+
+- **A — Detect**: `INSERT INTO general.donee_trigram_candidates` one row per distinct unlinked donee_name with its best trigram neighbour above threshold (default 0.85) and at least N citations (default 3).
+- **B — Review**: Claude Sonnet 4.6 decides SAME / RELATED / DIFFERENT per pair, atomic claim via `FOR UPDATE SKIP LOCKED`, same retry + concurrency framework as Stage 6.
+- **C — Apply**: for SAME verdicts, append `donee_name` to the entity's `alternate_names` and `entity_golden_records.aliases`, then insert `entity_source_links` rows for every raw `qualified_donees` row using that name — tagged `match_method = 'donee_trigram_fallback'` so the whole operation is reversible with one `DELETE`.
+
+Stage 8 **never creates new entities**. It only links existing primary-source ones. `npm run entities:donee-fallback` runs all three phases; `entities:donee-fallback:detect`, `:llm`, `:apply` run them individually.
+
 ---
 
 ## Libraries and tools

@@ -45,8 +45,6 @@ const DATA_FILES = [
       fiscal_year: record.fiscalYear || null,
       display_fiscal_year: record.displayFiscalYear || null,
       lottery_fund: record.lotteryFund || null,
-      data_quality: record.dataQuality ?? null,
-      data_quality_issues: record.dataQualityIssues ? JSON.stringify(record.dataQualityIssues) : null,
       version: record.__v ?? null,
       created_at: record.createdAt?.$date || null,
       updated_at: record.updatedAt?.$date || null,
@@ -54,7 +52,7 @@ const DATA_FILES = [
     columns: [
       'mongo_id', 'ministry', 'business_unit_name', 'recipient', 'program', 'amount',
       'lottery', 'payment_date', 'fiscal_year', 'display_fiscal_year', 'lottery_fund',
-      'data_quality', 'data_quality_issues', 'version', 'created_at', 'updated_at',
+      'version', 'created_at', 'updated_at',
     ],
   },
   {

@@ -10,12 +10,12 @@ A complete, reproducible data pipeline that downloads, transforms, and loads **5
 
 | Metric | Value |
 |--------|-------|
-| **Total rows loaded** | ~14M (including pre-computed analysis tables) |
+| **Total rows loaded** | ~8.6M (7.3M T3010 raw + ~1.3M pre-computed analysis) |
 | **T3010 raw-data rows** | ~7.3M |
 | **Fiscal years** | 2020, 2021, 2022, 2023, 2024 |
 | **Registered charities per year** | ~72,000 – 85,000 |
 | **Dataset categories** | 19 per year (93 total, some years missing disbursement_quota) |
-| **Database tables** | 52 + 3 views (6 lookup + 19 raw-data + 27 pre-computed analysis) |
+| **Database tables** | 46 + 3 views (6 lookup + 19 raw-data + 21 pre-computed analysis) |
 | **Data source** | Canada Revenue Agency T3010 via Government of Canada Open Data API |
 
 ### Important Note on 2024 Data
@@ -35,7 +35,7 @@ This project uses a two-tier access model:
 | `.env.public` | Yes | **Read-only** (SELECT only) | Hackathon participants, AI agents |
 | `.env` | No (gitignored) | **Full admin** (read/write) | Data pipeline operators |
 
-**Participants:** After obtaining a read-only `.env.public` (distributed out-of-band — see [SECURITY.md](../SECURITY.md)) and running `npm install`, you can immediately query ~14M rows of CRA data (T3010 raw data plus pre-computed accountability-analysis tables). No setup or data loading required.
+**Participants:** After obtaining a read-only `.env.public` (distributed out-of-band — see [SECURITY.md](../SECURITY.md)) and running `npm install`, you can immediately query ~8.6M rows of CRA data (7.3M T3010 raw data plus ~1.3M pre-computed accountability-analysis tables). No setup or data loading required.
 
 **Administrators:** Use `.env` with admin credentials to load data or manage the schema. To rotate the read-only credentials:
 ```bash
@@ -172,11 +172,16 @@ npm run import           # Loads cached JSON into PostgreSQL
 | `npm run drop` | Drop all tables |
 | `npm run fetch:2020` ... `fetch:2024` | Fetch a single year |
 | `npm run import:2020` ... `import:2024` | Import a single year |
-| `npm run analyze:all` | Full analysis: loops + scc + partitioned + score |
-| `npm run analyze:loops` | Brute-force cycle detection (2-6 hop) |
-| `npm run analyze:scc` | Tarjan SCC decomposition |
-| `npm run analyze:partitioned` | SCC-partitioned cycle detection |
-| `npm run analyze:score` | Deterministic 0-30 risk scoring |
+| `npm run analyze:all` | Full pipeline: loops → scc → partitioned → johnson → matrix → financial → score (~2 hrs, dominated by 6-hop loops) |
+| `npm run analyze:full` | `drop:loops --yes` + `analyze:all` — clean-slate re-run |
+| `npm run analyze:loops` | Brute-force cycle detection (2-6 hop, ~100 min for 6-hop) |
+| `npm run analyze:scc` | Tarjan SCC decomposition (<1 s) |
+| `npm run analyze:partitioned` | SCC-partitioned cycle detection (~14 s) |
+| `npm run analyze:johnson` | Johnson's algorithm cycles, capped at 6 hops |
+| `npm run analyze:matrix` | Matrix-power walk census (cross-validates loops / Johnson) |
+| `npm run analyze:financial` | Per-loop and per-charity financial recomputation (reads `cra.loops`) |
+| `npm run analyze:score` | Deterministic 0-30 risk scoring (~45 min) |
+| `npm run drop:loops` | Drops all 13 loop/SCC/matrix/financial tables (`-- --yes` to skip prompt) |
 | `npm run lookup -- --name "..."` | Interactive charity network lookup |
 | `npm run risk -- --bn ...` | Interactive risk report |
 | `npm run download` | Export tables as CSV/JSON |
@@ -331,35 +336,86 @@ The `scripts/advanced/` directory contains a multi-method pipeline for detecting
 ### Quick Start
 
 ```bash
-npm run analyze:all          # Full pipeline: loops + scc + partitioned + score
+npm run analyze:all          # Full pipeline — see step list below (~2 hrs, dominated by 6-hop loops)
 ```
 
-Or individually:
+If you want to repopulate from scratch (because upstream CRA data changed
+or because a prior run left orphan rollup rows — see `KNOWN-DATA-ISSUES.md`
+C-9):
 
 ```bash
-npm run analyze:loops        # Brute force: pruned self-join, 2-6 hops (~2 hours for 6-hop)
-npm run analyze:scc          # SCC decomposition: structural analysis (<1 sec)
-npm run analyze:partitioned  # Partitioned: SCC-partitioned Johnson's (~14 sec)
-npm run analyze:score        # Risk scoring: 0-30 score for each charity (~45 min)
+npm run analyze:full         # drop:loops --yes + analyze:all
 ```
 
-Supplementary cross-validation scripts (not included in `analyze:all`):
+`analyze:full` is safe to run anytime — every stage's migrate is
+idempotent (`CREATE TABLE / INDEX IF NOT EXISTS`), so scripts self-bootstrap
+against a freshly dropped DB without a `--migrate` flag.
+
+Or step-by-step:
 
 ```bash
-node scripts/advanced/06-johnson-cycles.js --max-hops 5    # Johnson's on full graph
-node scripts/advanced/04-matrix-power-census.js             # Walk census via matrix powers
+npm run analyze:loops        # 01 — brute-force self-join, 2-6 hops (~100 min for 6-hop)
+npm run analyze:scc          # 03 — Tarjan SCC decomposition (<1 s)
+npm run analyze:partitioned  # 05 — SCC-partitioned Johnson's (~14 s)
+npm run analyze:johnson      # 06 — Johnson's on full graph, capped at 6 hops
+npm run analyze:matrix       # 04 — matrix-power walk census (cross-validates 01/06)
+npm run analyze:financial    # 07 — per-loop / per-charity financial recomputation
+npm run analyze:score        # 02 — 0-30 risk scoring (~45 min)
+```
+
+Order matters: 01 produces `loop_edges` / `loops` consumed by 03, 05, 06, 07;
+03 produces `scc_components` consumed by 04 and 05; 06 produces
+`johnson_cycles` used by 04 for the `in_johnson_cycle` flag. 02 is a
+read-only scorer and must run last.
+
+Drop and rebuild anything:
+
+```bash
+npm run drop:loops           # interactive — confirm "yes" at the prompt
+npm run drop:loops -- --yes  # non-interactive
 ```
 
 ### Scripts
 
 | # | Script | What It Does | Speed |
 |---|--------|-------------|-------|
-| 01 | `01-detect-all-loops.js` | **Primary.** Iterative dead-end pruning (237K to ~54K edges), then N-way self-joins per hop. Temporal constraint (year window +/-1). Ground truth results. | 2-5 hop: ~6 min. 6-hop: ~2 hours |
-| 02 | `02-score-universe.js` | Risk scoring: circular + financial + temporal factors for every charity in a loop. Reads from `cra.loop_participants`. | ~45 min |
+| 01 | `01-detect-all-loops.js` | **Primary.** Iterative dead-end pruning (237K to ~54K edges), then N-way self-joins per hop. Temporal constraint (year window +/-1). Ground truth results. | 2-5 hop: ~8 min. 6-hop: ~2.5 hrs |
+| 02 | `02-score-universe.js` | Risk scoring: circular + financial + temporal factors for every charity in a loop. Reads from `cra.loop_participants`. | ~4 min (1,501 BNs) |
 | 03 | `03-scc-decomposition.js` | Tarjan's SCC. Shows network structure: 1 giant SCC (8,971 nodes, mostly denominational) + 338 small SCCs. | <1 sec |
-| 04 | `04-matrix-power-census.js` | Closed-walk census via matrix powers. Cross-validation diagnostic. Counts walks (not simple cycles). | ~3.5 min |
-| 05 | `05-partitioned-cycles.js` | Johnson's algorithm per SCC. Small SCCs get full enumeration. Giant SCC gets hub removal + fragmentation. Fast but misses ~40% of cycles routing through hubs. | ~14 sec |
-| 06 | `06-johnson-cycles.js` | Johnson's on full graph. Works at depth <=5. Chokes on giant SCC at depth 8. Use `--max-hops 5`. | Varies |
+| 04 | `04-matrix-power-census.js` | Closed-walk census via matrix powers. Cross-validation diagnostic. Counts walks (not simple cycles). | ~5 min |
+| 05 | `05-partitioned-cycles.js` | Johnson's algorithm per SCC. Small SCCs get full enumeration. Giant SCC gets hub removal + fragmentation. Fast but misses most cycles routing through hubs. | ~40 sec |
+| 06 | `06-johnson-cycles.js` | Johnson's on full graph, cap at 6 hops. Slower than 05 because giant SCC is not partitioned out. | ~80 min |
+
+### Measured runtime (2026-04-19, Render Pro-16GB, max-hops 6)
+
+The hackathon tested `analyze:full` end-to-end. Numbers below are the
+per-phase wall clock for future reference when budgeting a re-run. The
+6-hop query is the dominant cost — everything else is measured in
+single-digit minutes.
+
+| Phase | Wall clock | Output |
+|-------|-----------:|--------|
+| 01 edge build + iterative pruning | 2 s | 243,940 → 53,771 edges (78% pruned) |
+| 01 2-hop | 0.2 s | 508 cycles |
+| 01 3-hop | 0.5 s | 236 cycles |
+| 01 4-hop | 3.2 s | 472 cycles |
+| 01 5-hop | 7 min 36 s | 1,161 cycles |
+| 01 6-hop | **2 h 34 min** | 3,431 cycles |
+| 01 participant + universe build | <1 s | 30,003 participants, 1,501 universe BNs |
+| 03 Tarjan SCC | <1 s | 347 SCCs, 10,177 components |
+| 05 partitioned (Tier 1 + Tier 2) | <1 min | 108 cycles, 20 hubs |
+| 06 Johnson's full graph (max-hops 6) | **1 h 21 min** | 4,759 cycles |
+| 04 matrix-power census | 4 min 52 s | 10,177 rows |
+| 07 loop-financial analysis | ~1 min | refreshed 5,808 / 30,003 / 1,501 rollups |
+| 02 scorer | ~4 min | 1,501 scored 0–23 (top CANADA GIVES at 23/30) |
+| **Total** | **~4 h 20 min** | |
+
+If you lower `--max-hops 5` on script 01, the total collapses to roughly
+30 minutes (the 2 h 34 min 6-hop cost dominates). If you only need
+ground-truth loops and don't need Johnson's cross-validation or the
+matrix census, drop scripts 04 and 06 — they add another 1 h 26 min of
+compute but do not change the `loops`, `loop_universe`, or `loop_*_financials` tables that the risk-report, lookup, and dossier tools
+read from.
 
 ### How They Relate
 
@@ -374,7 +430,7 @@ All results stored in the `cra` schema (queryable by hackathon participants):
 
 | Table | Rows | Purpose |
 |-------|------|---------|
-| `loop_edges` | ~54,000 | Pruned gift edge graph (threshold + dead-end removal) |
+| `loop_edges` | 53,771 | Pruned gift edge graph (threshold + dead-end removal) |
 | `loops` | 5,808 | Detected cycles (brute force ground truth) |
 | `loop_participants` | 30,003 | Per-charity cycle membership with send/receive partners |
 | `loop_universe` | 1,501 | Per-charity aggregate stats and risk scores |
@@ -382,8 +438,11 @@ All results stored in the `cra` schema (queryable by hackathon participants):
 | `scc_summary` | 347 | Per-SCC statistics |
 | `partitioned_cycles` | 108 | Cycles from SCC-partitioned Johnson's |
 | `identified_hubs` | 20 | Mega-hub platforms identified in the giant SCC |
-| `johnson_cycles` | 2,128 | Johnson's algorithm results (cross-validation) |
+| `johnson_cycles` | 4,759 | Johnson's algorithm results (cross-validation) |
 | `matrix_census` | 10,177 | Walk census results (cross-validation) |
+| `loop_financials` | 5,808 | Per-loop bottleneck + flow recomputed within the loop's year window |
+| `loop_edge_year_flows` | 30,003 | Per-edge gift totals restricted to each loop's year window |
+| `loop_charity_financials` | 1,501 | Per-BN overhead proxy + loop-related inflow / outflow |
 
 ### CLI Options
 

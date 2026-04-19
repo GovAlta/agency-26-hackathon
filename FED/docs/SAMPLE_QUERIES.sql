@@ -6,7 +6,42 @@
 -- Copy/paste into any PostgreSQL client (psql, DBeaver, pgAdmin, etc.)
 --
 -- Schema: fed.*  |  Main table: fed.grants_contributions
+--
+-- IMPORTANT: agreement_value is a cumulative snapshot per amendment, NOT a
+-- delta (TBS spec: "total grant or contribution value, not the change in
+-- agreement value"). A naive SUM over all rows double- or triple-counts
+-- amended agreements. Use one of these three approaches, picking the one
+-- that matches your question:
+--
+--   * Current total commitment per agreement → fed.vw_agreement_current
+--   * Initial commitment only                → fed.vw_agreement_originals
+--                                              or WHERE is_amendment = false
+--   * Every snapshot (rare)                  → base table, no filter
+--
+-- See docs/DATA_DICTIONARY.md section "How to sum agreement_value correctly"
+-- for the full sum comparison (~$533B / $816B / $921B) and rationale.
 -- ============================================================================
+
+-- ── 0. CHOOSING THE RIGHT VIEW ─────────────────────────────────────────────
+
+-- 0a. Three ways of summing agreement_value, side-by-side. Useful for
+--     convincing yourself the amendment semantics matter.
+SELECT
+  (SELECT ROUND(SUM(agreement_value)::numeric, 0)
+     FROM fed.grants_contributions)                     AS sum_all_rows_wrong,
+  (SELECT ROUND(SUM(agreement_value)::numeric, 0)
+     FROM fed.vw_agreement_originals)                   AS sum_originals_only,
+  (SELECT ROUND(SUM(agreement_value)::numeric, 0)
+     FROM fed.vw_agreement_current)                     AS sum_current_commitment;
+
+-- 0b. For any specific agreement, show every snapshot the publisher has
+--     recorded against it. Useful for verifying amendment patterns.
+SELECT _id, amendment_number, amendment_date,
+       agreement_value, recipient_legal_name, is_amendment
+FROM fed.grants_contributions
+WHERE ref_number = '001-2020-2021-Q1-00006'
+ORDER BY NULLIF(regexp_replace(amendment_number, '\D', '', 'g'), '')::int NULLS FIRST;
+
 
 
 -- ── 1. SEARCH & DISCOVERY ──────────────────────────────────────────────────

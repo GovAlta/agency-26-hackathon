@@ -16,6 +16,7 @@ const log = require('../lib/logger');
 const { FISCAL_YEARS, DATASETS, getDatasetsForYear } = require('../config/datasets');
 const {
   yesNoToBool,
+  xFlagToBool,
   parseDecimal,
   parseInteger,
   parseDate,
@@ -171,16 +172,19 @@ async function importDirectors(client, records, year) {
 // ─── 3. Financial Data (dynamic fields) ─────────────────────────
 
 async function importFinancialData(client, records, year) {
+  // Per CRA Open Data Dictionary §3.7 (Financial Data).
+  // Amount fields become DECIMAL; the two "specify" text fields are TEXT.
   const numericFields = [
     '4100','4101','4102','4110','4120','4130','4140','4150','4155','4157','4158',
     '4160','4165','4166','4170','4180','4190','4200','4250','4300','4310','4320',
     '4330','4350','4500','4505','4510','4530','4540','4550','4560',
     '4570','4571','4575','4576','4577','4580','4590','4600','4610','4620','4630','4640',
-    '4650','4655','4700','4800','4810','4820','4830','4840','4850','4860','4870',
-    '4880','4890','4891','4900','4910','4920','4930','4950','5000','5010','5020',
+    '4650','4700','4800','4810','4820','4830','4840','4850','4860','4870',
+    '4880','4890','4891','4900','4910','4920','4950','5000','5010','5020',
     '5030','5040','5045','5050','5100','5500','5510','5610','5750','5900','5910',
   ];
   const boolFields = ['4400', '4490', '4565'];
+  const textFields = ['4655', '4930'];  // Text 175 per dictionary (free-text "specify")
 
   function processRow(rec) {
     const bn = cleanString(rec['BN']);
@@ -201,6 +205,9 @@ async function importFinancialData(client, records, year) {
     }
     for (const f of boolFields) {
       row[`field_${f}`] = yesNoToBool(rec[f]);
+    }
+    for (const f of textFields) {
+      row[`field_${f}`] = cleanString(rec[f]);
     }
 
     return row;
@@ -229,14 +236,39 @@ async function importFinancialData(client, records, year) {
 // ─── 4. General Info (dynamic fields) ───────────────────────────
 
 async function importGeneralInfo(client, records, year) {
+  // Per CRA Open Data Dictionary §3.6 (General Information / Sections A-C).
+  //
+  // The field-type lists below are derived directly from the dictionary.
+  // Fields appearing in the DB schema but not in any dictionary section
+  // (the "orphan" columns — 1610, 1620, 1630, 1640, 1650, 2110, 2300, 2350,
+  // 2520, 3205-3270, 3600, 3610, 4010, 5000, 5010, 5844-5849, 5851-5859)
+  // are intentionally kept in the schema but left NULL on import.
   const boolFields = [
-    '1570','1600','1610','1620','1630','1640','1650','1800','2000','2100','2110',
-    '2300','2350','2500','2510','2520','2540','2550','2560','2600','2610','2620',
-    '2630','2640','2650','2660','3200','3205','3210','3220','3230','3235','3240',
-    '3250','3260','3270','3400','3600','3610','3900','4000','4010','5000','5010',
-    '5800','5810','5820','5830','5840','5841','5842','5843','5844','5845','5846',
-    '5847','5848','5849','5850','5851','5852','5853','5854','5855','5856','5857',
-    '5858','5859','5860','5861','5862','5863','5864',
+    // Y/N flags, all from dictionary §3.6
+    '1570','1600','1800','2000','2100',
+    '2400',                                 // v23/v24 only — political-activity activation
+    '2500','2510','2530','2540','2550','2560','2570','2575','2580','2590',
+    '2600','2610','2620','2630','2640','2650',
+    '2700',                                 // "Charity paid external fundraisers"
+    '2730','2740','2750','2760','2770','2780','2800',
+    '3200','3400','3900','4000',
+    '5800','5810','5820','5830',
+    '5840','5841',                          // v26+ — grants to non-qualified donees
+    '5850','5860',                          // v27+ — DAF questions
+  ];
+  const decimalFields = [
+    '5030','5031','5032',                   // v23 only — Amount 14 (political-activity spend)
+    '5450','5460',                          // Amount 14 — fundraiser revenue/paid
+    '5843',                                 // v26+ Amount 17 — total paid to grantees ≤$5,000
+    '5862','5863','5864',                   // v27+ Amount 17 — DAF dollars
+  ];
+  const integerFields = [
+    '5842',                                 // v26+ Number 10 — count of grantees ≤$5,000
+    '5861',                                 // v27+ Number 10 — DAF account count
+  ];
+  const textFields = [
+    '2660',                                 // Text 175 — "Fundraising activity: Specify"
+    '2790',                                 // Text 175 — "External fundraisers: Specify"
   ];
   const internalDivisions = ['1510-01','1510-02','1510-03','1510-04','1510-05'];
 
@@ -255,6 +287,9 @@ async function importGeneralInfo(client, records, year) {
       program_percentage_1: parseInteger(rec['% 1'] ?? rec['Program #1 %']),
       program_percentage_2: parseInteger(rec['% 2'] ?? rec['Program #2 %']),
       program_percentage_3: parseInteger(rec['% 3'] ?? rec['Program #3 %']),
+      program_description_1: cleanString(rec['Program #1 Desc']),
+      program_description_2: cleanString(rec['Program #2 Desc']),
+      program_description_3: cleanString(rec['Program #3 Desc']),
       // 1510 subordinate/parent fields (API names differ from CSV)
       field_1510_subordinate: yesNoToBool(rec['1510']),
       field_1510_parent_bn: cleanString(rec['1510-BN']),
@@ -266,9 +301,10 @@ async function importGeneralInfo(client, records, year) {
       row[colName] = parseInteger(rec[d]);
     }
 
-    for (const f of boolFields) {
-      row[`field_${f}`] = yesNoToBool(rec[f]);
-    }
+    for (const f of boolFields)    row[`field_${f}`] = yesNoToBool(rec[f]);
+    for (const f of decimalFields) row[`field_${f}`] = parseDecimal(rec[f]);
+    for (const f of integerFields) row[`field_${f}`] = parseInteger(rec[f]);
+    for (const f of textFields)    row[`field_${f}`] = cleanString(rec[f]);
 
     return row;
   }
@@ -337,7 +373,9 @@ async function importNonQualifiedDonees(client, records, year) {
       purpose: cleanString(rec['Purpose']),
       cash_amount: parseDecimal(rec['Cash amount'] || rec['Cash Amount']),
       non_cash_amount: parseDecimal(rec['Non-cash amount'] || rec['Non-cash Amount'] || rec['Non-Cash Amount']),
-      country: cleanCode2(rec['Country']),
+      // Per dictionary §3.18 "Grant Country" is Text 125 — a free-text list of countries,
+      // NOT a 2-char code. cleanCode2 was silently dropping ~96% of values.
+      country: cleanString(rec['Country']),
     };
   }
 
@@ -391,7 +429,11 @@ async function importQualifiedDonees(client, records, year) {
 // ─── 8. Foundation Info ─────────────────────────────────────────
 
 async function importFoundationInfo(client, records, year) {
-  const decimalFields = ['100','110','111','112','120','130'];
+  // Per CRA Open Data Dictionary §3.8 (Schedule 1 - Foundations).
+  // 100/110/120/130 are Y/N; 111/112 are Amount 17 (new in v27).
+  const boolFields = ['100', '110', '120', '130'];
+  const decimalFields = ['111', '112'];
+  const allFields = ['100', '110', '111', '112', '120', '130'];  // preserve column order
 
   function processRow(rec) {
     const bn = cleanString(rec['BN']);
@@ -402,16 +444,15 @@ async function importFoundationInfo(client, records, year) {
       fpe,
       form_id: parseInteger(rec['Form ID'] || rec['FormID']),
     };
-    for (const f of decimalFields) {
-      row[`field_${f}`] = parseDecimal(rec[f]);
-    }
+    for (const f of boolFields)    row[`field_${f}`] = yesNoToBool(rec[f]);
+    for (const f of decimalFields) row[`field_${f}`] = parseDecimal(rec[f]);
     return row;
   }
 
   function buildValues(rows) {
-    const columns = `bn, fpe, form_id, ${decimalFields.map(f => `field_${f}`).join(', ')}`;
+    const columns = `bn, fpe, form_id, ${allFields.map(f => `field_${f}`).join(', ')}`;
     const values = rows.map(r =>
-      `(${sqlStr(r.bn)}, ${sqlStr(r.fpe)}, ${sqlVal(r.form_id)}, ${decimalFields.map(f => sqlVal(r[`field_${f}`])).join(', ')})`
+      `(${sqlStr(r.bn)}, ${sqlStr(r.fpe)}, ${sqlVal(r.form_id)}, ${allFields.map(f => sqlVal(r[`field_${f}`])).join(', ')})`
     ).join(',\n');
     return { columns, values };
   }
@@ -580,7 +621,10 @@ async function importCompensation(client, records, year) {
 // ─── 14. Gifts in Kind ──────────────────────────────────────────
 
 async function importGiftsInKind(client, records, year) {
-  const intFields = ['500','505','510','515','520','525','530','535','540','545'];
+  // Per CRA Open Data Dictionary §3.14 (Schedule 5 - Non-cash Gifts).
+  // 500-560 are all Y/N. Previous code mis-typed 500-545 as integer (parseInteger('Y')=NaN→NULL)
+  // and 555/560 as text (strings "Y"/"N" stored). Both corrected here.
+  const boolFields = ['500','505','510','515','520','525','530','535','540','545','550','555','560'];
 
   function processRow(rec) {
     const bn = cleanString(rec['BN']);
@@ -591,22 +635,19 @@ async function importGiftsInKind(client, records, year) {
       fpe,
       form_id: parseInteger(rec['Form ID'] || rec['FormID']),
     };
-    for (const f of intFields) {
-      row[`field_${f}`] = parseInteger(rec[f]);
+    for (const f of boolFields) {
+      row[`field_${f}`] = yesNoToBool(rec[f]);
     }
-    row.field_550 = yesNoToBool(rec['550']);
-    row.field_555 = cleanString(rec['555']);
-    row.field_560 = cleanString(rec['560']);
-    row.field_565 = cleanString(rec['565']);
-    row.field_580 = parseDecimal(rec['580']);
+    row.field_565 = cleanString(rec['565']);  // Text 175
+    row.field_580 = parseDecimal(rec['580']); // Amount 14
     return row;
   }
 
   function buildValues(rows) {
     const allCols = [
       'bn', 'fpe', 'form_id',
-      ...intFields.map(f => `field_${f}`),
-      'field_550', 'field_555', 'field_560', 'field_565', 'field_580',
+      ...boolFields.map(f => `field_${f}`),
+      'field_565', 'field_580',
     ];
     const columns = allCols.join(', ');
     const values = rows.map(r => {
@@ -694,10 +735,12 @@ async function importPoliticalActivityResources(client, records, year) {
       fpe,
       form_id: parseInteger(rec['Form ID'] || rec['FormID']),
       sequence_number: seq,
-      staff: parseInteger(rec['Staff']),
-      volunteers: parseInteger(rec['Volunteers']),
-      financial: parseDecimal(rec['Financial']),
-      property: parseDecimal(rec['Property']),
+      // Source publishes staff/volunteers/financial/property as "X"
+      // presence flags, not counts/amounts. Target schema is BOOLEAN.
+      staff: xFlagToBool(rec['Staff']),
+      volunteers: xFlagToBool(rec['Volunteers']),
+      financial: xFlagToBool(rec['Financial']),
+      property: xFlagToBool(rec['Property']),
       other_resource: cleanString(rec['Other'] || rec['Other Resource']),
     };
   }

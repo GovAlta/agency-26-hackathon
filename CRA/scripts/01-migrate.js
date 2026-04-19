@@ -208,6 +208,9 @@ async function migrate() {
         program_percentage_1 INTEGER,
         program_percentage_2 INTEGER,
         program_percentage_3 INTEGER,
+        program_description_1 TEXT,          -- "Program #N Desc" Text 60 per dictionary §3.6
+        program_description_2 TEXT,
+        program_description_3 TEXT,
         -- Internal divisions (pre-2024) and subordinate org fields (2024+)
         internal_division_1510_01 INTEGER,
         internal_division_1510_02 INTEGER,
@@ -249,7 +252,7 @@ async function migrate() {
         field_2630 BOOLEAN,
         field_2640 BOOLEAN,
         field_2650 BOOLEAN,
-        field_2660 BOOLEAN,
+        field_2660 TEXT,               -- "Fundraising activity: Specify" (Text 175 per dictionary)
         field_2700 BOOLEAN,
         field_2730 BOOLEAN,
         field_2740 BOOLEAN,
@@ -257,7 +260,7 @@ async function migrate() {
         field_2760 BOOLEAN,
         field_2770 BOOLEAN,
         field_2780 BOOLEAN,
-        field_2790 BOOLEAN,
+        field_2790 TEXT,               -- "External fundraisers: Specify" (Text 175 per dictionary)
         field_2800 BOOLEAN,
         field_3200 BOOLEAN,
         field_3205 BOOLEAN,
@@ -277,19 +280,19 @@ async function migrate() {
         field_4010 BOOLEAN,
         field_5000 BOOLEAN,
         field_5010 BOOLEAN,
-        field_5030 BOOLEAN,
-        field_5031 BOOLEAN,
-        field_5032 BOOLEAN,
-        field_5450 BOOLEAN,
-        field_5460 BOOLEAN,
+        field_5030 DECIMAL(18,2),       -- Amount 14 per dictionary (v23 only - political activities)
+        field_5031 DECIMAL(18,2),       -- Amount 14 per dictionary (v23 only)
+        field_5032 DECIMAL(18,2),       -- Amount 14 per dictionary (v23 only)
+        field_5450 DECIMAL(18,2),       -- Amount 14 per dictionary (fundraiser gross revenue)
+        field_5460 DECIMAL(18,2),       -- Amount 14 per dictionary (fundraiser amounts paid)
         field_5800 BOOLEAN,
         field_5810 BOOLEAN,
         field_5820 BOOLEAN,
         field_5830 BOOLEAN,
         field_5840 BOOLEAN,
         field_5841 BOOLEAN,
-        field_5842 BOOLEAN,
-        field_5843 BOOLEAN,
+        field_5842 INTEGER,             -- Number 10 per dictionary (count of grantees ≤$5,000)
+        field_5843 DECIMAL(18,2),       -- Amount 17 per dictionary (total paid to grantees ≤$5,000)
         field_5844 BOOLEAN,
         field_5845 BOOLEAN,
         field_5846 BOOLEAN,
@@ -307,10 +310,10 @@ async function migrate() {
         field_5858 BOOLEAN,
         field_5859 BOOLEAN,
         field_5860 BOOLEAN,
-        field_5861 BOOLEAN,
-        field_5862 BOOLEAN,
-        field_5863 BOOLEAN,
-        field_5864 BOOLEAN,
+        field_5861 INTEGER,             -- Number 10 per dictionary (DAF account count)
+        field_5862 DECIMAL(18,2),       -- Amount 17 per dictionary (DAF total value)
+        field_5863 DECIMAL(18,2),       -- Amount 17 per dictionary (DAF donations received)
+        field_5864 DECIMAL(18,2),       -- Amount 17 per dictionary (DAF qualifying disbursements)
         PRIMARY KEY (bn, fpe)
       );
     `);
@@ -373,7 +376,7 @@ async function migrate() {
         field_4630 DECIMAL(18,2),
         field_4640 DECIMAL(18,2),
         field_4650 DECIMAL(18,2),
-        field_4655 DECIMAL(18,2),
+        field_4655 TEXT,            -- Text 175 per dictionary §3.7 (specify type of revenue at 4650)
         field_4700 DECIMAL(18,2),
         field_4800 DECIMAL(18,2),
         field_4810 DECIMAL(18,2),
@@ -389,7 +392,7 @@ async function migrate() {
         field_4900 DECIMAL(18,2),
         field_4910 DECIMAL(18,2),
         field_4920 DECIMAL(18,2),
-        field_4930 DECIMAL(18,2),
+        field_4930 TEXT,            -- Text 175 per dictionary §3.7 (specify expenditures at 4920)
         field_4950 DECIMAL(18,2),
         field_5000 DECIMAL(18,2),
         field_5010 DECIMAL(18,2),
@@ -418,12 +421,12 @@ async function migrate() {
         bn VARCHAR(15) NOT NULL,
         fpe DATE NOT NULL,
         form_id INTEGER,
-        field_100 DECIMAL(18,2),
-        field_110 DECIMAL(18,2),
-        field_111 DECIMAL(18,2),
-        field_112 DECIMAL(18,2),
-        field_120 DECIMAL(18,2),
-        field_130 DECIMAL(18,2),
+        field_100 BOOLEAN,          -- Y/N per dictionary §3.8 (acquired control of corporation)
+        field_110 BOOLEAN,          -- Y/N per dictionary §3.8 (incurred debts)
+        field_111 DECIMAL(18,2),    -- Amount 17 per dictionary §3.8 (v27, restricted funds)
+        field_112 DECIMAL(18,2),    -- Amount 17 per dictionary §3.8 (v27, not permitted to spend)
+        field_120 BOOLEAN,          -- Y/N per dictionary §3.8 (non-qualifying investments)
+        field_130 BOOLEAN,          -- Y/N per dictionary §3.8 (owned >2% shares)
         PRIMARY KEY (bn, fpe)
       );
     `);
@@ -528,21 +531,21 @@ async function migrate() {
         bn VARCHAR(15) NOT NULL,
         fpe DATE NOT NULL,
         form_id INTEGER,
-        field_500 INTEGER,
-        field_505 INTEGER,
-        field_510 INTEGER,
-        field_515 INTEGER,
-        field_520 INTEGER,
-        field_525 INTEGER,
-        field_530 INTEGER,
-        field_535 INTEGER,
-        field_540 INTEGER,
-        field_545 INTEGER,
-        field_550 BOOLEAN,
-        field_555 TEXT,
-        field_560 TEXT,
-        field_565 TEXT,
-        field_580 DECIMAL(18,2),
+        field_500 BOOLEAN,          -- Y/N per dictionary §3.14 (artwork/wine/jewellery)
+        field_505 BOOLEAN,          -- Y/N (building materials)
+        field_510 BOOLEAN,          -- Y/N (clothing/furniture/food)
+        field_515 BOOLEAN,          -- Y/N (vehicles)
+        field_520 BOOLEAN,          -- Y/N (cultural properties)
+        field_525 BOOLEAN,          -- Y/N (ecological properties)
+        field_530 BOOLEAN,          -- Y/N (life insurance policies)
+        field_535 BOOLEAN,          -- Y/N (medical equipment/supplies)
+        field_540 BOOLEAN,          -- Y/N (privately held securities)
+        field_545 BOOLEAN,          -- Y/N (machinery/equipment)
+        field_550 BOOLEAN,          -- Y/N (publicly traded securities)
+        field_555 BOOLEAN,          -- Y/N (books) — was TEXT storing "Y"/"N" strings
+        field_560 BOOLEAN,          -- Y/N (other)       — was TEXT storing "Y"/"N" strings
+        field_565 TEXT,             -- Text 175 per dictionary (Other: specify)
+        field_580 DECIMAL(18,2),    -- Amount 14 per dictionary
         PRIMARY KEY (bn, fpe)
       );
     `);
@@ -580,16 +583,20 @@ async function migrate() {
     log.info('Created cra_political_activity_funding with indexes');
 
     // Schedule 7 - Political Activity Resources
+    // staff/volunteers/financial/property are BOOLEAN presence flags per the
+    // CRA Open Data Dictionary — source publishes them as "X" markers, not
+    // counts/amounts. Prior INTEGER/DECIMAL schema caused parseInt("X")=NaN
+    // and dropped every non-null value. See CRA/config/cra-crosswalk.json.
     await client.query(`
       CREATE TABLE IF NOT EXISTS cra_political_activity_resources (
         bn VARCHAR(15) NOT NULL,
         fpe DATE NOT NULL,
         form_id INTEGER,
         sequence_number INTEGER NOT NULL,
-        staff INTEGER,
-        volunteers INTEGER,
-        financial DECIMAL(18,2),
-        property DECIMAL(18,2),
+        staff BOOLEAN,
+        volunteers BOOLEAN,
+        financial BOOLEAN,
+        property BOOLEAN,
         other_resource TEXT,
         PRIMARY KEY (bn, fpe, sequence_number)
       );
@@ -608,7 +615,7 @@ async function migrate() {
         purpose TEXT,
         cash_amount DECIMAL(18,2),
         non_cash_amount DECIMAL(18,2),
-        country CHAR(2),
+        country TEXT,               -- Text 125 per dictionary §3.18 (list of grant countries; free-text, not 2-char code)
         PRIMARY KEY (bn, fpe, sequence_number)
       );
     `);

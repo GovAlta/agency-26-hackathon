@@ -100,7 +100,6 @@ All data is pre-downloaded (no API). Source files are in `data/`:
 - **Non-profit dates** go back to 1979 (long-established organizations)
 - **Sole-source `special` field** contains boolean-like values
 - **Lottery-funded grants** are flagged with `lottery = 'True'`
-- Data quality issues are tracked in `data_quality_issues` JSONB field on grants
 
 ## Testing
 

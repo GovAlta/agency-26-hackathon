@@ -2,7 +2,20 @@
 
 > **Database**: PostgreSQL
 > **Coverage**: Fiscal Years 2020--2024 (5 years)
-> **Last Updated**: 2026-04-11
+> **Last Updated**: 2026-04-18
+>
+> **2026-04-18 schema refresh:** Field types were reconciled against the CRA
+> Open Data Dictionary v2.0 (`docs/guides-forms/OPEN-DATA-DICTIONARY-V2.0 ENG.md`).
+> Affected: `cra_foundation_info.field_100/110/120/130` (DECIMAL→BOOLEAN, added
+> new `field_111/112`), `cra_gifts_in_kind.field_500-545/555/560` (INT/TEXT→BOOLEAN),
+> `cra_financial_general.field_2660/2790` (BOOLEAN→TEXT),
+> `cra_financial_general.field_5030/5031/5032/5450/5460/5843/5862-5864`
+> (BOOLEAN→DECIMAL), `cra_financial_general.field_5842/5861` (BOOLEAN→INTEGER),
+> `cra_financial_details.field_4655/4930` (DECIMAL→TEXT),
+> `cra_non_qualified_donees.country` (CHAR(2)→TEXT),
+> `cra_financial_general.program_description_1/2/3` (new columns).
+> See `data/reports/full-reload-verify.md` for the 6-level verification
+> (2,714 checks, 0 failures).
 
 ---
 
@@ -179,10 +192,10 @@ Core charity registration and contact information. One row per charity per datas
 | `province`          | VARCHAR(2)    |          | Province or state code. FK to `cra_province_state_lookup.code`.          |
 | `postal_code`       | VARCHAR(10)   |          | Postal code or ZIP code.                                                 |
 | `country`           | CHAR(2)       |          | Country code. FK to `cra_country_lookup.code`.                           |
-| `registration_date` | DATE          |          | Date the charity was first registered with CRA. **2024+ only.**         |
-| `language`          | VARCHAR(2)    |          | Preferred language of correspondence. **2024+ only.**                    |
-| `contact_phone`     | TEXT          |          | Contact phone number. **2024+ only.**                                    |
-| `contact_email`     | TEXT          |          | Contact email address. **2024+ only.**                                   |
+| `registration_date` | DATE          |          | *Reserved column. Not populated by the CRA Open Data T3010 feed (absent from §3.1 of the CRA Open Data Dictionary v2.0). Always NULL. Kept for a future integration with the separate CRA Charity Registry export that does include this field.* |
+| `language`          | VARCHAR(2)    |          | *Reserved column. Not populated. See `registration_date` note.*          |
+| `contact_phone`     | TEXT          |          | *Reserved column. Not populated. See `registration_date` note.*          |
+| `contact_email`     | TEXT          |          | *Reserved column. Not populated. See `registration_date` note.*          |
 
 **Primary Key**: (`bn`, `fiscal_year`)
 **Source CSV/API**: Identification resource from CRA Open Data
@@ -282,7 +295,7 @@ Detailed financial data from Section D (Financial Information) and Schedule 6 (D
 | `field_4630`          | DECIMAL(15,2)  |          | **Total non-tax-receipted revenue from fundraising.** *(Both Section D and Schedule 6 -- revenue.)* |
 | `field_4640`          | DECIMAL(15,2)  |          | **Total revenue from sale of goods and services** (except to any level of government in Canada). *(Both Section D and Schedule 6 -- revenue.)* |
 | `field_4650`          | DECIMAL(15,2)  |          | **Other revenue** not already included in the amounts above. *(Both Section D and Schedule 6 -- revenue.)* |
-| `field_4655`          | DECIMAL(15,2)  |          | **Specify type(s) of revenue** included in the amount reported at line 4650. *(Schedule 6 only -- text field stored as DECIMAL; may contain text in source data.)* |
+| `field_4655`          | TEXT           |          | **Specify type(s) of revenue** included in the amount reported at line 4650. *(Schedule 6 only -- free-text description per CRA Open Data Dictionary §3.7.)* |
 | `field_4700`          | DECIMAL(15,2)  |          | **Total revenue** (sum of all revenue lines). *(Both Section D and Schedule 6.)* |
 
 #### Expenditures (Schedule 6 / Section D)
@@ -303,7 +316,7 @@ Detailed financial data from Section D (Financial Information) and Schedule 6 (D
 | `field_4900`          | DECIMAL(15,2)  |          | **Amortization of capitalized assets.** *(Schedule 6 only -- expenditure.)* |
 | `field_4910`          | DECIMAL(15,2)  |          | **Research grants and scholarships as part of the charity's own activities.** *(Schedule 6 only -- expenditure.)* |
 | `field_4920`          | DECIMAL(15,2)  |          | **All other expenditures** not included in the amounts above (excluding qualifying disbursements). *(Both Section D and Schedule 6 -- expenditure.)* |
-| `field_4930`          | DECIMAL(15,2)  |          | **Specify type(s) of expenditures** included in the amount reported at line 4920. *(Schedule 6 only -- text field stored as DECIMAL; may contain text in source data.)* |
+| `field_4930`          | TEXT           |          | **Specify type(s) of expenditures** included in the amount reported at line 4920. *(Schedule 6 only -- free-text description per CRA Open Data Dictionary §3.7.)* |
 | `field_4950`          | DECIMAL(15,2)  |          | **Total expenditures before qualifying disbursements** (sum of lines 4800 to 4920 for Schedule 6; sum of 4860 + 4810 + 4920 for Section D). *(Both Section D and Schedule 6.)* |
 
 #### Expenditure Allocation (Schedule 6 / Section D)
@@ -381,18 +394,40 @@ Boolean flags and program area allocations from Sections A, B, and C of the T301
 | `field_2630`                 | BOOLEAN       |          | Fundraising method used: Tournament/sporting events. *(Section C, line C6.)* |
 | `field_2640`                 | BOOLEAN       |          | Fundraising method used: Cause-related marketing. *(Section C, line C6.)* |
 | `field_2650`                 | BOOLEAN       |          | Fundraising method used: Other. *(Section C, line C6.)* |
-| `field_2660`                 | BOOLEAN       |          | Fundraising method: Specify (text description for "Other"). *(Section C, line C6.)* Note: stored as BOOLEAN in schema but contains text on the form. |
+| `field_2660`                 | TEXT          |          | Fundraising method: Specify (free-text description for "Other"). *(Section C, line C6 — Text 175 per CRA Open Data Dictionary §3.6.)* |
 | `field_2700`                 | BOOLEAN       |          | Did the charity pay external fundraisers? *(Section C, line C7.)* |
+| `field_2730`                 | BOOLEAN       |          | External fundraisers: Commissions. *(Section C, line C7.)* |
+| `field_2740`                 | BOOLEAN       |          | External fundraisers: Bonuses. *(Section C, line C7.)* |
+| `field_2750`                 | BOOLEAN       |          | External fundraisers: Finder's fees. *(Section C, line C7.)* |
+| `field_2760`                 | BOOLEAN       |          | External fundraisers: Set fee for services. *(Section C, line C7.)* |
+| `field_2770`                 | BOOLEAN       |          | External fundraisers: Honoraria. *(Section C, line C7.)* |
+| `field_2780`                 | BOOLEAN       |          | External fundraisers: Other. *(Section C, line C7.)* |
+| `field_2790`                 | TEXT          |          | External fundraisers: Specify (free-text). *(Section C, line C7 — Text 175 per §3.6.)* |
+| `field_2800`                 | BOOLEAN       |          | Did the fundraiser issue tax receipts on behalf of the charity? *(Section C, line C7.)* |
+| `field_5030`                 | DECIMAL(15,2) |          | Total amount spent by the charity on political activities. *(v23 only — Amount 14 per §3.6. Removed in v24+.)* |
+| `field_5031`                 | DECIMAL(15,2) |          | Of amount at 5030, total gifts made to qualified donees for political activities. *(v23 only.)* |
+| `field_5032`                 | DECIMAL(15,2) |          | Total received from outside Canada directed to political activities. *(v23 only.)* |
+| `field_5450`                 | DECIMAL(15,2) |          | Gross revenue collected by external fundraisers on behalf of the charity. *(Section C, line C7 — Amount 14 per §3.6.)* |
+| `field_5460`                 | DECIMAL(15,2) |          | Amounts paid to and/or retained by external fundraisers. *(Section C, line C7 — Amount 14 per §3.6.)* |
 | `field_3200`                 | BOOLEAN       |          | Did the charity compensate any directors/trustees or like officials, or persons not at arm's length, for services provided (other than expense reimbursement)? *(Section C, line C8.)* |
 | `field_3400`                 | BOOLEAN       |          | Did the charity incur any expenses for compensation of employees during the fiscal period? If yes, must complete Schedule 3. *(Section C, line C9.)* |
 | `field_5800`                 | BOOLEAN       |          | Did the charity acquire a non-qualifying security? *(Section C, line C12.)* |
 | `field_5810`                 | BOOLEAN       |          | Did the charity allow any of its donors to use any of its property (except for permissible uses)? *(Section C, line C13.)* |
 | `field_5820`                 | BOOLEAN       |          | Did the charity issue any of its tax receipts for donations on behalf of another organization? *(Section C, line C14.)* |
 | `field_5830`                 | BOOLEAN       |          | Did the charity have direct partnership holdings at any time during the fiscal period? *(Section C, line C15.)* |
-| `field_5840`                 | BOOLEAN       |          | Did the charity make qualifying disbursements by way of grants to non-qualified donees (grantees)? *(Section C, line C16.)* |
-| `field_5850`                 | BOOLEAN       |          | In the 24 months before the beginning of the fiscal period, did the average value of the charity's property not used in charitable activities exceed the threshold ($100K for charitable orgs, $25K for foundations)? *(Section C, line C17.)* |
-| `field_5860`                 | BOOLEAN       |          | Did the charity hold any donor advised funds (DAFs) during the fiscal period? *(Section C, line C18.)* |
-| `field_5864`                 | BOOLEAN       |          | Total value of qualifying disbursements from DAFs during the fiscal period. *(Section C, line C18(d). Note: stored as BOOLEAN in schema but represents a dollar amount on the form.)* |
+| `field_5840`                 | BOOLEAN       |          | Did the charity make qualifying disbursements by way of grants to non-qualified donees (grantees)? *(Section C, line C16. v26+.)* |
+| `field_5841`                 | BOOLEAN       |          | Did the charity make grants to any grantees totalling more than $5,000 in the fiscal period? *(v26+.)* |
+| `field_5842`                 | INTEGER       |          | Number of grantees that received grants totalling $5,000 or less in the fiscal period. *(v26+, Number 10 per §3.6.)* |
+| `field_5843`                 | DECIMAL(15,2) |          | Total amount paid to grantees that received grants totalling $5,000 or less in the fiscal period. *(v26+, Amount 17 per §3.6.)* |
+| `field_5850`                 | BOOLEAN       |          | In the 24 months before the beginning of the fiscal period, did the average value of the charity's property not used in charitable activities exceed the threshold ($100K for charitable orgs, $25K for foundations)? *(Section C, line C17. v27+.)* |
+| `field_5860`                 | BOOLEAN       |          | Did the charity hold any donor advised funds (DAFs) during the fiscal period? *(Section C, line C18. v27+.)* |
+| `field_5861`                 | INTEGER       |          | Total number of DAF accounts held at the end of the fiscal period. *(v27+, Number 10 per §3.6.)* |
+| `field_5862`                 | DECIMAL(15,2) |          | Total value of all DAF accounts held at the end of the fiscal period. *(v27+, Amount 17 per §3.6.)* |
+| `field_5863`                 | DECIMAL(15,2) |          | Total value of donations to DAF accounts received during the fiscal period. *(v27+, Amount 17.)* |
+| `field_5864`                 | DECIMAL(15,2) |          | Total value of qualifying disbursements from DAFs during the fiscal period. *(v27+, Amount 17 per §3.6.)* |
+| `program_description_1`      | TEXT          |          | Program Area #1 description (free text, up to 60 chars per CRA Open Data Dictionary §3.6). |
+| `program_description_2`      | TEXT          |          | Program Area #2 description (free text, up to 60 chars). |
+| `program_description_3`      | TEXT          |          | Program Area #3 description (free text, up to 60 chars). |
 
 **Primary Key**: (`bn`, `fpe`)
 **Source CSV/API**: General financial resource from CRA Open Data
@@ -417,7 +452,7 @@ Gifts made by the charity to other qualified donees (other registered charities,
 | `province`                | VARCHAR(2)     |          | Province/state of the donee.                                     |
 | `total_gifts`             | DECIMAL(15,2)  |          | Total value of gifts made to this donee.                         |
 | `gifts_in_kind`           | DECIMAL(15,2)  |          | Value of non-cash (in-kind) gifts made to this donee.            |
-| `number_of_donees`        | INTEGER        |          | Number of donees (aggregated row count). **2024+ only.**         |
+| `number_of_donees`        | INTEGER        |          | *Reserved column. Not populated by the CRA Open Data qualified_donees feed (absent from §3.4 of the CRA Open Data Dictionary v2.0). Always NULL. Use `COUNT(*)` grouped by `(bn, fpe)` to compute the donee count if needed.* |
 | `political_activity_gift` | BOOLEAN        |          | Was the gift related to political activities?                    |
 | `political_activity_amount`| DECIMAL(15,2) |          | Amount of gift related to political activities.                  |
 
@@ -459,11 +494,11 @@ Gifts to non-qualified donees (organizations that are not registered charities o
 | `purpose`         | TEXT           |          | Purpose or reason for the gift.                             |
 | `cash_amount`     | DECIMAL(15,2)  |          | Cash amount given.                                          |
 | `non_cash_amount` | DECIMAL(15,2)  |          | Value of non-cash gifts.                                    |
-| `country`         | CHAR(2)        |          | Country of the recipient. FK to `cra_country_lookup.code`.  |
+| `country`         | TEXT           |          | Grant country/countries — free-text list (Text 125 per CRA Open Data Dictionary §3.18). May contain a single 2-char code, a full country name, or a space-separated list for multi-country grants. **Not** a 2-letter code and **not** a FK to `cra_country_lookup`. |
 
 **Primary Key**: (`bn`, `fpe`, `sequence_number`)
-**Source CSV/API**: Non-qualified donees resource from CRA Open Data
-**T3010 Form Reference**: Section relating to gifts to non-qualified donees
+**Source CSV/API**: Non-qualified donees resource from CRA Open Data (v26+)
+**T3010 Form Reference**: T1441 — Qualifying disbursements: Grants to non-qualified donees (grantees)
 
 ---
 
@@ -476,10 +511,12 @@ Financial information specific to foundations (designation `A` or `B`). Correspo
 | `bn`        | VARCHAR(15)    | NOT NULL | Business Number.                                |
 | `fpe`       | DATE           | NOT NULL | Fiscal Period End date.                         |
 | `form_id`   | INTEGER        |          | T3010 form version ID.                          |
-| `field_100` | DECIMAL(15,2)  |          | Foundation-specific financial field (line 100).  |
-| `field_110` | DECIMAL(15,2)  |          | Foundation-specific financial field (line 110).  |
-| `field_120` | DECIMAL(15,2)  |          | Foundation-specific financial field (line 120).  |
-| `field_130` | DECIMAL(15,2)  |          | Foundation-specific financial field (line 130).  |
+| `field_100` | BOOLEAN        |          | Did the foundation acquire control of a corporation? *(Schedule 1 Y/N per CRA Open Data Dictionary §3.8.)* |
+| `field_110` | BOOLEAN        |          | Did the foundation incur any debts during the fiscal period other than current operating expenses / investments / administering charitable programs? *(Schedule 1 Y/N.)* |
+| `field_111` | DECIMAL(15,2)  |          | Total value of all restricted funds held at the end of the fiscal period. *(v27+, Amount 17 per §3.8.)* |
+| `field_112` | DECIMAL(15,2)  |          | Of that amount, portion the foundation was not permitted to spend due to a funder's written trust or direction. *(v27+.)* |
+| `field_120` | BOOLEAN        |          | During the fiscal period, did the foundation hold shares, rights to acquire such shares, or debt owing to it that are non-qualifying investments? *(Schedule 1 Y/N.)* |
+| `field_130` | BOOLEAN        |          | Did the foundation own more than 2% of any class of shares of a corporation at any time during the fiscal period? *(Schedule 1 Y/N.)* |
 
 **Primary Key**: (`bn`, `fpe`)
 **Source CSV/API**: Foundation information resource from CRA Open Data
@@ -496,10 +533,10 @@ Summary-level information about activities conducted outside Canada. Corresponds
 | `bn`        | VARCHAR(15)    | NOT NULL | Business Number.                                                  |
 | `fpe`       | DATE           | NOT NULL | Fiscal Period End date.                                           |
 | `form_id`   | INTEGER        |          | T3010 form version ID.                                            |
-| `field_200` | DECIMAL(15,2)  |          | Total expenditures on activities outside Canada.                  |
-| `field_210` | BOOLEAN        |          | Schedule 2 Y/N flag.                                              |
-| `field_220` | BOOLEAN        |          | Schedule 2 Y/N flag.                                              |
-| `field_230` | BOOLEAN        |          | Schedule 2 Y/N flag.                                              |
+| `field_200` | DECIMAL(15,2)  |          | Total expenditures on activities outside Canada (excluding qualifying disbursements). |
+| `field_210` | BOOLEAN        |          | Resources provided for programs outside Canada to any other individual or entity (excluding qualifying disbursements)? |
+| `field_220` | BOOLEAN        |          | Projects undertaken outside Canada funded by Global Affairs?       |
+| `field_230` | TEXT           |          | Total amount of funds expended for Global-Affairs-funded programs. *(Per CRA Open Data Dictionary §3.9 this is an Amount 14 value; stored as TEXT because source emits it that way. Cast to numeric in queries if needed.)* |
 | `field_240` | BOOLEAN        |          | Schedule 2 Y/N flag.                                              |
 | `field_250` | BOOLEAN        |          | Schedule 2 Y/N flag.                                              |
 | `field_260` | BOOLEAN        |          | Schedule 2 Y/N flag.                                              |
@@ -739,6 +776,14 @@ Website URLs associated with the charity. Unlike most data tables, this is keyed
 **Source CSV/API**: Web URLs resource from CRA Open Data
 **T3010 Form Reference**: Identification section -- Website address
 
+> **Note on row count**: The source JSON contains 169,473 rows across 2020-2024 but
+> the table holds 169,123 rows. The 350-row delta is due to exact-duplicate
+> `(BN, fiscal_year, sequence_number)` tuples in the CKAN source — the same URL
+> emitted more than once per charity per year — which `ON CONFLICT DO NOTHING`
+> correctly collapses at import time. The delta is not data loss; every unique
+> URL from the source is preserved. Verified by `scripts/data-quality/06-full-reload-verify.js`
+> (Level 1 row-count parity is computed against *unique* source keys).
+
 ---
 
 ## 4. Views
@@ -808,6 +853,62 @@ Joins `cra_charitable_programs` with `cra_program_type_lookup` to include human-
 **Key Output Columns**: `bn`, `fpe`, `program_type`, program type name (EN/FR), `description`.
 
 **Typical Use**: Browse a charity's program descriptions, filter charities by program status (ongoing vs. new vs. inactive).
+
+---
+
+## 4a. Pre-computed Analysis Tables
+
+The following **21 tables** are produced by the advanced-analysis pipeline
+(`scripts/advanced/*.js` and `scripts/data-quality/*.js`), not by the 19-dataset
+import. They are materialized on disk so participants don't have to recompute
+them, but they are NOT part of the raw CRA Open Data feed. `npm run drop` +
+`npm run setup` does not recreate them — run `npm run analyze:all` for the
+loop/SCC/scoring outputs and the data-quality / donee-name / overhead scripts
+for the rest.
+
+### Loop-detection pipeline (`scripts/advanced/`)
+
+| Table                    | Produced by                          | Contents |
+|--------------------------|--------------------------------------|----------|
+| `loops`                  | `01-detect-all-loops.js`             | Every 2-to-6-hop cycle found in the gift-to-qualified-donee graph. One row per directed cycle. |
+| `loop_edges`             | `01-detect-all-loops.js`             | Edges (donor→donee) that participate in any detected cycle. |
+| `loop_participants`      | `01-detect-all-loops.js`             | Flattened view: one row per (BN, loop) participation. |
+| `loop_universe`          | `01-detect-all-loops.js`             | Per-BN rollup of how many cycles the charity participates in, by hop count. |
+| `loop_financials`        | `07-loop-financial-analysis.js`      | Per-loop flow volumes (gifts given/received around the cycle). |
+| `loop_charity_financials`| `07-loop-financial-analysis.js`      | Per-charity-in-loop financial profile (revenue, expenditures, gifts). |
+| `loop_edge_year_flows`   | `07-loop-financial-analysis.js`      | Per-edge per-year gift amounts (for same-year / adjacent-year symmetry analysis). |
+| `scc_components`         | `03-scc-decomposition.js`            | Strongly Connected Components of the gift graph (Tarjan). |
+| `scc_summary`            | `03-scc-decomposition.js`            | Per-SCC rollup (size, total gift flow). |
+| `matrix_census`          | `04-matrix-power-census.js`          | Walk-based cycle census (cross-validation of `loops`). |
+| `partitioned_cycles`     | `05-partitioned-cycles.js`           | Johnson's algorithm run per-SCC (scalable cycle enumeration). |
+| `johnson_cycles`         | `06-johnson-cycles.js`               | Cross-validation Johnson's run over the full graph. |
+| `identified_hubs`        | `02-score-universe.js`               | Hub charities by in/out-degree and dollar flow. |
+
+### Scoring & risk outputs
+
+| Table                        | Produced by                    | Contents |
+|------------------------------|--------------------------------|----------|
+| `overhead_by_charity`        | `09-overhead-analysis.js`      | Per-BN per-year overhead ratios (admin + fundraising ÷ programs). |
+| `overhead_by_year`           | `09-overhead-analysis.js`      | Yearly aggregate overhead distribution. |
+| `overhead_by_year_designation`| `09-overhead-analysis.js`     | Yearly overhead aggregate by charity designation (A/B/C). |
+| `govt_funding_by_charity`    | `08-govt-funding.js`           | Per-BN per-year federal/provincial/municipal government revenue share. |
+| `govt_funding_by_year`       | `08-govt-funding.js`           | Yearly aggregate government-funding share across all charities. |
+
+### Data-quality violation tables (`scripts/data-quality/`)
+
+| Table                              | Produced by                           | Contents |
+|------------------------------------|---------------------------------------|----------|
+| `t3010_sanity_violations`          | `02-t3010-arithmetic-impossibilities.js` | Sanity-check failures (e.g., negative revenue). |
+| `t3010_arithmetic_violations`      | `02-t3010-arithmetic-impossibilities.js` | Arithmetic-rule failures (line-sum reconciliation). |
+| `t3010_impossibility_violations`   | `02-t3010-arithmetic-impossibilities.js` | Impossible-combination flags (e.g., compensation > total expenses). |
+| `donee_name_quality`               | `10-donee-trigram-fallback.js`        | Trigram-similarity scores for recipient-name normalization. |
+| `_dnq_canonical`                   | `10-donee-trigram-fallback.js`        | Helper: canonical normalized donee names. |
+| `identification_name_history`      | `03-identification-backfill-check.js` | Per-BN history of legal/account name changes across years. |
+
+> **Note**: These tables are intentionally *not* created by `01-migrate.js` —
+> they are outputs of long-running analysis jobs (the 6-hop loop detection
+> takes ~2 hours). On a fresh database they will be absent. Run
+> `npm run analyze:all` followed by `npm run data-quality` to recreate them.
 
 ---
 

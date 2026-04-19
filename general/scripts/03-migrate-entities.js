@@ -389,6 +389,37 @@ const migrations = [
   )`,
 
   // ═══════════════════════════════════════════════════════════════════
+  //  TIER 6 — donee_name trigram fallback staging
+  //  Populated by scripts/10-donee-trigram-fallback.js Phase A. One row
+  //  per distinct unlinked donee_name with its best primary-source
+  //  trigram neighbour. Phase B updates verdict via LLM; Phase C applies
+  //  SAME verdicts as new entity_source_links + alias enrichment.
+  // ═══════════════════════════════════════════════════════════════════
+  `CREATE TABLE IF NOT EXISTS general.donee_trigram_candidates (
+    id SERIAL PRIMARY KEY,
+    donee_name TEXT NOT NULL,
+    donee_name_norm TEXT NOT NULL UNIQUE,
+    candidate_entity_id INTEGER NOT NULL REFERENCES general.entities(id),
+    candidate_canonical_name TEXT NOT NULL,
+    candidate_bn_root VARCHAR(9),
+    similarity NUMERIC(4,3) NOT NULL,
+    citations INTEGER NOT NULL DEFAULT 0,
+    total_gifts NUMERIC(18,2),
+    status TEXT NOT NULL DEFAULT 'pending',
+    llm_verdict TEXT,
+    llm_confidence NUMERIC(3,2),
+    llm_reasoning TEXT,
+    reviewed_at TIMESTAMP,
+    applied_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW()
+  )`,
+
+  `CREATE INDEX IF NOT EXISTS idx_donee_trigram_status
+     ON general.donee_trigram_candidates(status)`,
+  `CREATE INDEX IF NOT EXISTS idx_donee_trigram_entity
+     ON general.donee_trigram_candidates(candidate_entity_id)`,
+
+  // ═══════════════════════════════════════════════════════════════════
   //  VIEWS
   // ═══════════════════════════════════════════════════════════════════
 

@@ -139,18 +139,19 @@
       <p>This repository brings together four major Canadian government open data sources into a shared PostgreSQL database, with separate schemas to prevent collisions. Each dataset has its own pipeline for downloading, cleansing, importing, verifying, and analyzing data.</p>
 
       <div class="stat-grid">
-        <div class="stat"><div class="number">~11M</div><div class="label">Total Records</div></div>
+        <div class="stat"><div class="number">~20M</div><div class="label">Total Records (all schemas)</div></div>
         <div class="stat"><div class="number">4</div><div class="label">Datasets</div></div>
         <div class="stat"><div class="number">4</div><div class="label">DB Schemas</div></div>
         <div class="stat"><div class="number">6</div><div class="label">Matching Layers</div></div>
       </div>
+      <p class="mini" style="margin-top:-8px">~11M raw source rows (CRA T3010 7.3M + FED 1.3M + AB 2.4M) plus ~9M in the <code>general</code> entity-resolution schema and pre-computed CRA analysis tables. Verified counts in <a href="CRA/data/reports/full-reload-verify.md">CRA/data/reports/full-reload-verify.md</a>.</p>
 
       <h3>Architecture</h3>
       <pre>hackathon/
-├── CRA/        # CRA T3010 Charity Data         (cra schema,     ~7.3M rows)
+├── CRA/        # CRA T3010 Charity Data         (cra schema,     ~7.3M raw + ~1.3M analysis)
 ├── FED/        # Federal Grants &amp; Contributions  (fed schema,     ~1.3M rows)
 ├── AB/         # Alberta Open Data               (ab schema,      ~2.4M rows)
-├── general/    # Shared tools &amp; reference data   (general schema)
+├── general/    # Shared tools &amp; reference data   (general schema, ~7.9M source links)
 ├── index.html  # This page
 ├── LICENSE     # MIT
 └── README.md</pre>
@@ -164,7 +165,7 @@
       <table>
         <thead><tr><th>Dataset</th><th>Schema</th><th>Records</th><th>Years</th><th>Key Focus</th></tr></thead>
         <tbody>
-          <tr><td><strong>CRA T3010</strong></td><td><code>cra</code></td><td>~7.3M</td><td>2020-2024</td><td>Charity filings, circular gifting, risk scoring</td></tr>
+          <tr><td><strong>CRA T3010</strong></td><td><code>cra</code></td><td>~7.3M raw + ~1.3M analysis</td><td>2020-2024</td><td>Charity filings, circular gifting, risk scoring</td></tr>
           <tr><td><strong>Federal Grants</strong></td><td><code>fed</code></td><td>~1.3M</td><td>Multi-year</td><td>Government transfers, amendments, vendor concentration</td></tr>
           <tr><td><strong>Alberta Open Data</strong></td><td><code>ab</code></td><td>~2.4M</td><td>2014-2025</td><td>Grants, contracts, sole-source, non-profit registry</td></tr>
           <tr><td><strong>General</strong></td><td><code>general</code></td><td>27</td><td>Current</td><td>Ministry reference, fuzzy matching, AI entity resolution</td></tr>
@@ -254,7 +255,7 @@ npm run entities:dossier          # per-entity dossier explorer at localhost:380
     <!-- ═══════ CRA ═══════ -->
     <section :class="{active: tab==='cra'}">
       <h2>CRA T3010 Charity Data</h2>
-      <p><strong>Schema:</strong> <code>cra</code> &nbsp;|&nbsp; <strong>Records:</strong> ~7.3M &nbsp;|&nbsp; <strong>Years:</strong> 2020-2024 &nbsp;|&nbsp; <strong>Tables:</strong> 35 (6 lookup + 19 data + 10 analysis)</p>
+      <p><strong>Schema:</strong> <code>cra</code> &nbsp;|&nbsp; <strong>Records:</strong> ~7.3M T3010 + ~1.3M pre-computed analysis &nbsp;|&nbsp; <strong>Years:</strong> 2020-2024 &nbsp;|&nbsp; <strong>Tables:</strong> 46 + 3 views (6 lookup + 19 raw-data + 21 analysis created by advanced scripts)</p>
 
       <div class="stat-grid">
         <div class="stat"><div class="number">~85K</div><div class="label">Charities / Year</div></div>
@@ -547,7 +548,7 @@ npm run pipeline:rebuild              # reset + all stages in order</pre>
       </p>
 
       <!-- ── CRA ── -->
-      <h3 style="color: var(--tab-cra)">CRA &mdash; <code>cra</code> schema (52 tables + 3 views, ~14M rows)</h3>
+      <h3 style="color: var(--tab-cra)">CRA &mdash; <code>cra</code> schema (46 tables + 3 views, ~8.6M rows)</h3>
 
       <h4>Identity &amp; registration</h4>
       <table>

@@ -46,6 +46,7 @@ const PHASES = {
   llm_ant:    { label: '08a · LLM review (Anthropic, 100 conc)',   cmd: 'node', args: ['scripts/08-llm-golden-records.js', '--concurrency', '100', '--provider', 'anthropic'] },
   llm_vtx:    { label: '08b · LLM review (Vertex, 100 conc)',      cmd: 'node', args: ['scripts/08-llm-golden-records.js', '--concurrency', '100', '--provider', 'vertex'] },
   build:      { label: '09 · Build golden records (final compile)', cmd: 'node', args: ['scripts/09-build-golden-records.js'] },
+  donee_fb:   { label: '10 · Donee-name trigram fallback (NEW)',    cmd: 'node', args: ['scripts/10-donee-trigram-fallback.js'] },
 };
 
 // Per-phase in-memory state: { child, startedAt, exitCode, lastLine, logRing }

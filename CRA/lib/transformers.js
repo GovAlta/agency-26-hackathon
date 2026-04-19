@@ -9,6 +9,18 @@ function yesNoToBool(value) {
   return value.toUpperCase() === 'Y';
 }
 
+/**
+ * Convert "X" presence-flag string to boolean.
+ * Used by cra_political_activity_resources where the source publishes
+ * staff/volunteers/financial/property as "X" markers (meaning "this
+ * resource was used") rather than counts or amounts. Empty → NULL,
+ * "X" → true, anything else → false.
+ */
+function xFlagToBool(value) {
+  if (value === null || value === undefined || value === '') return null;
+  return String(value).trim().toUpperCase() === 'X';
+}
+
 /** Parse a decimal string. Returns null for empty/invalid. */
 function parseDecimal(value) {
   if (!value || value === '') return null;
@@ -62,6 +74,7 @@ function sqlVal(value) {
 
 module.exports = {
   yesNoToBool,
+  xFlagToBool,
   parseDecimal,
   parseInteger,
   parseDate,

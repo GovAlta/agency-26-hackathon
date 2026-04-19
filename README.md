@@ -50,7 +50,7 @@ All four data modules share the same PostgreSQL database on Render (`cra`, `fed`
 
 ### CRA — Canada Revenue Agency T3010 Charity Data
 
-**Schema:** `cra` · **Rows:** ~14M · **Tables:** 52 + 3 views · **Years:** 2020–2024
+**Schema:** `cra` · **Rows:** ~8.6M (7.3M T3010 raw + ~1.3M pre-computed analysis) · **Tables:** 46 + 3 views · **Years:** 2020–2024
 
 Annual filings from ~85,000 registered Canadian charities: financial statements, directors, gift flows between charities, program descriptions. Also includes pre-computed accountability-analysis tables (loop detection across 2–6 hops, SCC decomposition, overhead rollups, government-funding breakdown, T3010 data-quality violation flags, donee-name quality scoring).
 

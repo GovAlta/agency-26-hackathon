@@ -1,0 +1,5388 @@
+{
+  "_metadata": {
+    "description": "Comprehensive source → database crosswalk for the 19 CRA T3010 datasets.",
+    "generated": "2026-04-19T21:08:30.410Z",
+    "sourceAuthority": "Government of Canada Open Data Portal (open.canada.ca) — CKAN datastore_search API",
+    "fiscalYearsCovered": [
+      2020,
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "importLogic": "CRA/scripts/04-import-data.js (per-dataset importer functions)",
+    "transformLibrary": "CRA/lib/transformers.js",
+    "purpose": "Prove every source key is either (a) mapped to a target column with a known transform, or (b) intentionally skipped. Zero silent drops allowed."
+  },
+  "datasets": {
+    "identification": {
+      "id": 1,
+      "name": "Identification",
+      "t3010Section": "Part A - Identification",
+      "description": "Core charity registration: BN, legal name, address, category, designation",
+      "sourceUuidsByYear": {
+        "2020": "2b9adf8a-1cf5-4019-8e75-9fe6ed50892b",
+        "2021": "40043933-3e30-4c9a-813d-ccfdacdaf5db",
+        "2022": "4284197f-73f9-4c28-8e4f-56aeaf9414cf",
+        "2023": "31a52caf-fa79-4ab3-bded-1ccc7b61c17f",
+        "2024": "694fdc72-eae4-4ee0-83eb-832ab7b230e3"
+      },
+      "databaseTable": "cra_identification",
+      "primaryKey": [
+        "bn",
+        "fiscal_year"
+      ],
+      "totalRowsInDb": 421866,
+      "totalRowsInCachedSource": 421866,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 421866,
+          "sourceSample": "831282512RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 421866,
+          "status": "OK (src 421866, db 421866)"
+        },
+        {
+          "sourceKeyAliases": [
+            "__SYNTHESIZED__"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "fiscal_year",
+          "targetDataType": "integer",
+          "transform": "year from filename/run",
+          "defect": null,
+          "dbNonNullCount": 421866,
+          "status": "OK (synthesized at import time, not a source column)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Category"
+          ],
+          "sourceKeyMatched": "Category",
+          "sourceNonNullCountAcrossYears": 421866,
+          "sourceSample": "210",
+          "targetColumn": "category",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 421866,
+          "status": "OK (src 421866, db 421866)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Sub Category"
+          ],
+          "sourceKeyMatched": "Sub Category",
+          "sourceNonNullCountAcrossYears": 421866,
+          "sourceSample": "2",
+          "targetColumn": "sub_category",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 421866,
+          "status": "OK (src 421866, db 421866)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Designation"
+          ],
+          "sourceKeyMatched": "Designation",
+          "sourceNonNullCountAcrossYears": 421866,
+          "sourceSample": "A",
+          "targetColumn": "designation",
+          "targetDataType": "character",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 421866,
+          "status": "OK (src 421866, db 421866)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Legal Name"
+          ],
+          "sourceKeyMatched": "Legal Name",
+          "sourceNonNullCountAcrossYears": 421866,
+          "sourceSample": "Hill Pride Legacy Fund",
+          "targetColumn": "legal_name",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 421866,
+          "status": "OK (src 421866, db 421866)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Account Name"
+          ],
+          "sourceKeyMatched": "Account Name",
+          "sourceNonNullCountAcrossYears": 421866,
+          "sourceSample": "Hill Pride Legacy Fund",
+          "targetColumn": "account_name",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 421866,
+          "status": "OK (src 421866, db 421866)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Address Line 1"
+          ],
+          "sourceKeyMatched": "Address Line 1",
+          "sourceNonNullCountAcrossYears": 421802,
+          "sourceSample": "129 - 2550 MATHESON BLVD E",
+          "targetColumn": "address_line_1",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 421802,
+          "status": "OK (src 421802, db 421802)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Address Line 2"
+          ],
+          "sourceKeyMatched": "Address Line 2",
+          "sourceNonNullCountAcrossYears": 38712,
+          "sourceSample": "APP 712",
+          "targetColumn": "address_line_2",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 38712,
+          "status": "OK (src 38712, db 38712)"
+        },
+        {
+          "sourceKeyAliases": [
+            "City"
+          ],
+          "sourceKeyMatched": "City",
+          "sourceNonNullCountAcrossYears": 421866,
+          "sourceSample": "MISSISSAUGA",
+          "targetColumn": "city",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 421866,
+          "status": "OK (src 421866, db 421866)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Province"
+          ],
+          "sourceKeyMatched": "Province",
+          "sourceNonNullCountAcrossYears": 421852,
+          "sourceSample": "ON",
+          "targetColumn": "province",
+          "targetDataType": "character varying",
+          "transform": "cleanCode2",
+          "defect": null,
+          "dbNonNullCount": 421852,
+          "status": "OK (src 421852, db 421852)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Postal Code"
+          ],
+          "sourceKeyMatched": "Postal Code",
+          "sourceNonNullCountAcrossYears": 421861,
+          "sourceSample": "L4W4Z1",
+          "targetColumn": "postal_code",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 421861,
+          "status": "OK (src 421861, db 421861)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Country"
+          ],
+          "sourceKeyMatched": "Country",
+          "sourceNonNullCountAcrossYears": 421866,
+          "sourceSample": "CA",
+          "targetColumn": "country",
+          "targetDataType": "character",
+          "transform": "cleanCode2",
+          "defect": null,
+          "dbNonNullCount": 421866,
+          "status": "OK (src 421866, db 421866)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [
+        {
+          "column_name": "registration_date",
+          "data_type": "date",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "language",
+          "data_type": "character varying",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "contact_phone",
+          "data_type": "text",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "contact_email",
+          "data_type": "text",
+          "dbNonNullCount": 0
+        }
+      ],
+      "knownDefects": []
+    },
+    "directors": {
+      "id": 2,
+      "name": "Directors/Officers",
+      "t3010Section": "Schedule - Directors/Trustees and Like Officials",
+      "description": "Board directors, trustees, and officers for each charity filing",
+      "sourceUuidsByYear": {
+        "2020": "029d8159-3074-4637-af22-a50c7182cc51",
+        "2021": "9b2d0f3d-9b66-401d-a551-863ec27414c1",
+        "2022": "245cb6eb-f9bc-4eff-adc5-26131b6bed66",
+        "2023": "798a4a5f-f1ac-41a1-82d7-ef777f905bfe",
+        "2024": "3eb35dcd-9b0c-4ae9-a45c-e5e481567c23"
+      },
+      "databaseTable": "cra_directors",
+      "primaryKey": [
+        "bn",
+        "fpe",
+        "sequence_number"
+      ],
+      "totalRowsInDb": 2873624,
+      "totalRowsInCachedSource": 2873624,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 2873624,
+          "sourceSample": "831282512RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 2873624,
+          "status": "OK (src 2873624, db 2873624)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 2873624,
+          "sourceSample": "2020-01-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 2873624,
+          "status": "OK (src 2873624, db 2873624)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 2873624,
+          "sourceSample": "24",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 2873624,
+          "status": "OK (src 2873624, db 2873624)"
+        },
+        {
+          "sourceKeyAliases": [
+            "#"
+          ],
+          "sourceKeyMatched": "#",
+          "sourceNonNullCountAcrossYears": 2873624,
+          "sourceSample": "000000001",
+          "targetColumn": "sequence_number",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 2873624,
+          "status": "OK (src 2873624, db 2873624)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Last Name"
+          ],
+          "sourceKeyMatched": "Last Name",
+          "sourceNonNullCountAcrossYears": 2872954,
+          "sourceSample": "Berlin",
+          "targetColumn": "last_name",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 2872954,
+          "status": "OK (src 2872954, db 2872954)"
+        },
+        {
+          "sourceKeyAliases": [
+            "First Name"
+          ],
+          "sourceKeyMatched": "First Name",
+          "sourceNonNullCountAcrossYears": 2870431,
+          "sourceSample": "Walter",
+          "targetColumn": "first_name",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 2870431,
+          "status": "OK (src 2870431, db 2870431)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Initials"
+          ],
+          "sourceKeyMatched": "Initials",
+          "sourceNonNullCountAcrossYears": 571561,
+          "sourceSample": "G",
+          "targetColumn": "initials",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 571561,
+          "status": "OK (src 571561, db 571561)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Position"
+          ],
+          "sourceKeyMatched": "Position",
+          "sourceNonNullCountAcrossYears": 2799995,
+          "sourceSample": "President",
+          "targetColumn": "position",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 2799995,
+          "status": "OK (src 2799995, db 2799995)"
+        },
+        {
+          "sourceKeyAliases": [
+            "At Arm's Length"
+          ],
+          "sourceKeyMatched": "At Arm's Length",
+          "sourceNonNullCountAcrossYears": 2730942,
+          "sourceSample": "Y",
+          "targetColumn": "at_arms_length",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 2730942,
+          "status": "OK (src 2730942, db 2730942)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Start Date"
+          ],
+          "sourceKeyMatched": "Start Date",
+          "sourceNonNullCountAcrossYears": 2584802,
+          "sourceSample": "2011-03-03",
+          "targetColumn": "start_date",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 2584802,
+          "status": "OK (src 2584802, db 2584802)"
+        },
+        {
+          "sourceKeyAliases": [
+            "End Date"
+          ],
+          "sourceKeyMatched": "End Date",
+          "sourceNonNullCountAcrossYears": 695333,
+          "sourceSample": "2020-01-31",
+          "targetColumn": "end_date",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 695333,
+          "status": "OK (src 695333, db 695333)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "financial_data": {
+      "id": 3,
+      "name": "Financial Data",
+      "t3010Section": "Section D & Schedule 6",
+      "description": "Detailed financial line items: revenue, expenses, assets, liabilities",
+      "sourceUuidsByYear": {
+        "2020": "9dfd020a-e5e5-49c7-a4ed-c9c8b54c8188",
+        "2021": "93544c86-0458-448a-adac-fff195c4f42c",
+        "2022": "2436c7a6-7ad4-45d2-abea-62de613e6ef0",
+        "2023": "0b9b4b01-5cb6-4981-b007-ae88f48cc799",
+        "2024": "e545170c-3689-4833-b2a8-e9e83100ab59"
+      },
+      "databaseTable": "cra_financial_details",
+      "primaryKey": [
+        "bn",
+        "fpe"
+      ],
+      "totalRowsInDb": 420849,
+      "totalRowsInCachedSource": 420849,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 420849,
+          "sourceSample": "831282512RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 420849,
+          "status": "OK (src 420849, db 420849)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 420849,
+          "sourceSample": "2020-01-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 420849,
+          "status": "OK (src 420849, db 420849)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FormID",
+            "Form ID"
+          ],
+          "sourceKeyMatched": "FormID",
+          "sourceNonNullCountAcrossYears": 83812,
+          "sourceSample": "25",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 420849,
+          "status": "OK (src 83812, db 420849)"
+        },
+        {
+          "sourceKeyAliases": [
+            "SectionUsed",
+            "Section Used"
+          ],
+          "sourceKeyMatched": "SectionUsed",
+          "sourceNonNullCountAcrossYears": 83812,
+          "sourceSample": "D",
+          "targetColumn": "section_used",
+          "targetDataType": "character",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 420849,
+          "status": "OK (src 83812, db 420849)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4020"
+          ],
+          "sourceKeyMatched": "4020",
+          "sourceNonNullCountAcrossYears": 377455,
+          "sourceSample": "C",
+          "targetColumn": "field_4020",
+          "targetDataType": "character",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 377455,
+          "status": "OK (src 377455, db 377455)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4050"
+          ],
+          "sourceKeyMatched": "4050",
+          "sourceNonNullCountAcrossYears": 128571,
+          "sourceSample": "N",
+          "targetColumn": "field_4050",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 128571,
+          "status": "OK (src 128571, db 128571)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4100"
+          ],
+          "sourceKeyMatched": "4100",
+          "sourceNonNullCountAcrossYears": 277919,
+          "sourceSample": "124437",
+          "targetColumn": "field_4100",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 277919,
+          "status": "OK (src 277919, db 277919)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4101"
+          ],
+          "sourceKeyMatched": "4101",
+          "sourceNonNullCountAcrossYears": 61845,
+          "sourceSample": "500",
+          "targetColumn": "field_4101",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 61845,
+          "status": "OK (src 61845, db 61845)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4102"
+          ],
+          "sourceKeyMatched": "4102",
+          "sourceNonNullCountAcrossYears": 29426,
+          "sourceSample": "126802",
+          "targetColumn": "field_4102",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 29426,
+          "status": "OK (src 29426, db 29426)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4110"
+          ],
+          "sourceKeyMatched": "4110",
+          "sourceNonNullCountAcrossYears": 45507,
+          "sourceSample": "0",
+          "targetColumn": "field_4110",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 45507,
+          "status": "OK (src 45507, db 45507)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4120"
+          ],
+          "sourceKeyMatched": "4120",
+          "sourceNonNullCountAcrossYears": 176511,
+          "sourceSample": "648",
+          "targetColumn": "field_4120",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 176511,
+          "status": "OK (src 176511, db 176511)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4130"
+          ],
+          "sourceKeyMatched": "4130",
+          "sourceNonNullCountAcrossYears": 13126,
+          "sourceSample": "36401",
+          "targetColumn": "field_4130",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 13126,
+          "status": "OK (src 13126, db 13126)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4140"
+          ],
+          "sourceKeyMatched": "4140",
+          "sourceNonNullCountAcrossYears": 90003,
+          "sourceSample": "791460",
+          "targetColumn": "field_4140",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 90003,
+          "status": "OK (src 90003, db 90003)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4150"
+          ],
+          "sourceKeyMatched": "4150",
+          "sourceNonNullCountAcrossYears": 37833,
+          "sourceSample": "843",
+          "targetColumn": "field_4150",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 37833,
+          "status": "OK (src 37833, db 37833)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4155"
+          ],
+          "sourceKeyMatched": "4155",
+          "sourceNonNullCountAcrossYears": 115716,
+          "sourceSample": "937799",
+          "targetColumn": "field_4155",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 115716,
+          "status": "OK (src 115716, db 115716)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4157"
+          ],
+          "sourceKeyMatched": "4157",
+          "sourceNonNullCountAcrossYears": 23268,
+          "sourceSample": "576",
+          "targetColumn": "field_4157",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 23268,
+          "status": "OK (src 23268, db 23268)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4158"
+          ],
+          "sourceKeyMatched": "4158",
+          "sourceNonNullCountAcrossYears": 4642,
+          "sourceSample": "0",
+          "targetColumn": "field_4158",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 4642,
+          "status": "OK (src 4642, db 4642)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4160"
+          ],
+          "sourceKeyMatched": "4160",
+          "sourceNonNullCountAcrossYears": 135172,
+          "sourceSample": "1400",
+          "targetColumn": "field_4160",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 135172,
+          "status": "OK (src 135172, db 135172)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4165"
+          ],
+          "sourceKeyMatched": "4165",
+          "sourceNonNullCountAcrossYears": 10699,
+          "sourceSample": "0",
+          "targetColumn": "field_4165",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 10699,
+          "status": "OK (src 10699, db 10699)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4166"
+          ],
+          "sourceKeyMatched": "4166",
+          "sourceNonNullCountAcrossYears": 104989,
+          "sourceSample": "-13018",
+          "targetColumn": "field_4166",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 104989,
+          "status": "OK (src 104989, db 104989)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4170"
+          ],
+          "sourceKeyMatched": "4170",
+          "sourceNonNullCountAcrossYears": 130672,
+          "sourceSample": "4249",
+          "targetColumn": "field_4170",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 130672,
+          "status": "OK (src 130672, db 130672)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4180"
+          ],
+          "sourceKeyMatched": "4180",
+          "sourceNonNullCountAcrossYears": 4519,
+          "sourceSample": "0",
+          "targetColumn": "field_4180",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 4519,
+          "status": "OK (src 4519, db 4519)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4190"
+          ],
+          "sourceKeyMatched": "4190",
+          "sourceNonNullCountAcrossYears": 2863,
+          "sourceSample": "0",
+          "targetColumn": "field_4190",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 2863,
+          "status": "OK (src 2863, db 2863)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4200"
+          ],
+          "sourceKeyMatched": "4200",
+          "sourceNonNullCountAcrossYears": 388188,
+          "sourceSample": "125837",
+          "targetColumn": "field_4200",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 388188,
+          "status": "OK (src 388188, db 388188)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4250"
+          ],
+          "sourceKeyMatched": "4250",
+          "sourceNonNullCountAcrossYears": 29212,
+          "sourceSample": "96",
+          "targetColumn": "field_4250",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 29212,
+          "status": "OK (src 29212, db 29212)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4300"
+          ],
+          "sourceKeyMatched": "4300",
+          "sourceNonNullCountAcrossYears": 210052,
+          "sourceSample": "3995",
+          "targetColumn": "field_4300",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 210052,
+          "status": "OK (src 210052, db 210052)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4310"
+          ],
+          "sourceKeyMatched": "4310",
+          "sourceNonNullCountAcrossYears": 107058,
+          "sourceSample": "35088",
+          "targetColumn": "field_4310",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 107058,
+          "status": "OK (src 107058, db 107058)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4320"
+          ],
+          "sourceKeyMatched": "4320",
+          "sourceNonNullCountAcrossYears": 29811,
+          "sourceSample": "94270",
+          "targetColumn": "field_4320",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 29811,
+          "status": "OK (src 29811, db 29811)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4330"
+          ],
+          "sourceKeyMatched": "4330",
+          "sourceNonNullCountAcrossYears": 102715,
+          "sourceSample": "25301",
+          "targetColumn": "field_4330",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 102715,
+          "status": "OK (src 102715, db 102715)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4350"
+          ],
+          "sourceKeyMatched": "4350",
+          "sourceNonNullCountAcrossYears": 282768,
+          "sourceSample": "0",
+          "targetColumn": "field_4350",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 282768,
+          "status": "OK (src 282768, db 282768)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4500"
+          ],
+          "sourceKeyMatched": "4500",
+          "sourceNonNullCountAcrossYears": 316557,
+          "sourceSample": "18",
+          "targetColumn": "field_4500",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 316557,
+          "status": "OK (src 316557, db 316557)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4505"
+          ],
+          "sourceKeyMatched": "4505",
+          "sourceNonNullCountAcrossYears": 19995,
+          "sourceSample": "0",
+          "targetColumn": "field_4505",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 19995,
+          "status": "OK (src 19995, db 19995)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4510"
+          ],
+          "sourceKeyMatched": "4510",
+          "sourceNonNullCountAcrossYears": 149366,
+          "sourceSample": "0",
+          "targetColumn": "field_4510",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 149366,
+          "status": "OK (src 149366, db 149366)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4530"
+          ],
+          "sourceKeyMatched": "4530",
+          "sourceNonNullCountAcrossYears": 211732,
+          "sourceSample": "0",
+          "targetColumn": "field_4530",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 211732,
+          "status": "OK (src 211732, db 211732)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4540"
+          ],
+          "sourceKeyMatched": "4540",
+          "sourceNonNullCountAcrossYears": 94950,
+          "sourceSample": "121",
+          "targetColumn": "field_4540",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 94950,
+          "status": "OK (src 94950, db 94950)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4550"
+          ],
+          "sourceKeyMatched": "4550",
+          "sourceNonNullCountAcrossYears": 103018,
+          "sourceSample": "8961",
+          "targetColumn": "field_4550",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 103018,
+          "status": "OK (src 103018, db 103018)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4560"
+          ],
+          "sourceKeyMatched": "4560",
+          "sourceNonNullCountAcrossYears": 63714,
+          "sourceSample": "1900",
+          "targetColumn": "field_4560",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 63714,
+          "status": "OK (src 63714, db 63714)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4570"
+          ],
+          "sourceKeyMatched": "4570",
+          "sourceNonNullCountAcrossYears": 25845,
+          "sourceSample": "2500",
+          "targetColumn": "field_4570",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 25845,
+          "status": "OK (src 25845, db 25845)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4571"
+          ],
+          "sourceKeyMatched": "4571",
+          "sourceNonNullCountAcrossYears": 31441,
+          "sourceSample": "0",
+          "targetColumn": "field_4571",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 31441,
+          "status": "OK (src 31441, db 31441)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4575"
+          ],
+          "sourceKeyMatched": "4575",
+          "sourceNonNullCountAcrossYears": 41172,
+          "sourceSample": "0",
+          "targetColumn": "field_4575",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 41172,
+          "status": "OK (src 41172, db 41172)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4576"
+          ],
+          "sourceKeyMatched": "4576",
+          "sourceNonNullCountAcrossYears": 6296,
+          "sourceSample": "0",
+          "targetColumn": "field_4576",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 6296,
+          "status": "OK (src 6296, db 6296)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4577"
+          ],
+          "sourceKeyMatched": "4577",
+          "sourceNonNullCountAcrossYears": 4248,
+          "sourceSample": "0",
+          "targetColumn": "field_4577",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 4248,
+          "status": "OK (src 4248, db 4248)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4580"
+          ],
+          "sourceKeyMatched": "4580",
+          "sourceNonNullCountAcrossYears": 193968,
+          "sourceSample": "7593",
+          "targetColumn": "field_4580",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 193968,
+          "status": "OK (src 193968, db 193968)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4590"
+          ],
+          "sourceKeyMatched": "4590",
+          "sourceNonNullCountAcrossYears": 27177,
+          "sourceSample": "0",
+          "targetColumn": "field_4590",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 27177,
+          "status": "OK (src 27177, db 27177)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4600"
+          ],
+          "sourceKeyMatched": "4600",
+          "sourceNonNullCountAcrossYears": 35011,
+          "sourceSample": "225300",
+          "targetColumn": "field_4600",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 35011,
+          "status": "OK (src 35011, db 35011)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4610"
+          ],
+          "sourceKeyMatched": "4610",
+          "sourceNonNullCountAcrossYears": 78936,
+          "sourceSample": "26504",
+          "targetColumn": "field_4610",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 78936,
+          "status": "OK (src 78936, db 78936)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4620"
+          ],
+          "sourceKeyMatched": "4620",
+          "sourceNonNullCountAcrossYears": 45496,
+          "sourceSample": "720",
+          "targetColumn": "field_4620",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 45496,
+          "status": "OK (src 45496, db 45496)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4630"
+          ],
+          "sourceKeyMatched": "4630",
+          "sourceNonNullCountAcrossYears": 130493,
+          "sourceSample": "111808",
+          "targetColumn": "field_4630",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 130493,
+          "status": "OK (src 130493, db 130493)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4640"
+          ],
+          "sourceKeyMatched": "4640",
+          "sourceNonNullCountAcrossYears": 131078,
+          "sourceSample": "0",
+          "targetColumn": "field_4640",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 131078,
+          "status": "OK (src 131078, db 131078)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4650"
+          ],
+          "sourceKeyMatched": "4650",
+          "sourceNonNullCountAcrossYears": 226239,
+          "sourceSample": "474",
+          "targetColumn": "field_4650",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 226239,
+          "status": "OK (src 226239, db 226239)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4700"
+          ],
+          "sourceKeyMatched": "4700",
+          "sourceNonNullCountAcrossYears": 399623,
+          "sourceSample": "112282",
+          "targetColumn": "field_4700",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 399620,
+          "status": "OK (src 399623, db 399620)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4800"
+          ],
+          "sourceKeyMatched": "4800",
+          "sourceNonNullCountAcrossYears": 142449,
+          "sourceSample": "884",
+          "targetColumn": "field_4800",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 142449,
+          "status": "OK (src 142449, db 142449)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4810"
+          ],
+          "sourceKeyMatched": "4810",
+          "sourceNonNullCountAcrossYears": 195784,
+          "sourceSample": "0",
+          "targetColumn": "field_4810",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 195784,
+          "status": "OK (src 195784, db 195784)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4820"
+          ],
+          "sourceKeyMatched": "4820",
+          "sourceNonNullCountAcrossYears": 231192,
+          "sourceSample": "1",
+          "targetColumn": "field_4820",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 231192,
+          "status": "OK (src 231192, db 231192)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4830"
+          ],
+          "sourceKeyMatched": "4830",
+          "sourceNonNullCountAcrossYears": 134016,
+          "sourceSample": "305",
+          "targetColumn": "field_4830",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 134016,
+          "status": "OK (src 134016, db 134016)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4840"
+          ],
+          "sourceKeyMatched": "4840",
+          "sourceNonNullCountAcrossYears": 237754,
+          "sourceSample": "13228",
+          "targetColumn": "field_4840",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 237754,
+          "status": "OK (src 237754, db 237754)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4850"
+          ],
+          "sourceKeyMatched": "4850",
+          "sourceNonNullCountAcrossYears": 200861,
+          "sourceSample": "34612",
+          "targetColumn": "field_4850",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 200861,
+          "status": "OK (src 200861, db 200861)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4860"
+          ],
+          "sourceKeyMatched": "4860",
+          "sourceNonNullCountAcrossYears": 273273,
+          "sourceSample": "6328",
+          "targetColumn": "field_4860",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 273273,
+          "status": "OK (src 273273, db 273273)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4870"
+          ],
+          "sourceKeyMatched": "4870",
+          "sourceNonNullCountAcrossYears": 107754,
+          "sourceSample": "2065",
+          "targetColumn": "field_4870",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 107754,
+          "status": "OK (src 107754, db 107754)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4880"
+          ],
+          "sourceKeyMatched": "4880",
+          "sourceNonNullCountAcrossYears": 192683,
+          "sourceSample": "14104",
+          "targetColumn": "field_4880",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 192683,
+          "status": "OK (src 192683, db 192683)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4890"
+          ],
+          "sourceKeyMatched": "4890",
+          "sourceNonNullCountAcrossYears": 23161,
+          "sourceSample": "7022",
+          "targetColumn": "field_4890",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 23161,
+          "status": "OK (src 23161, db 23161)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4891"
+          ],
+          "sourceKeyMatched": "4891",
+          "sourceNonNullCountAcrossYears": 127813,
+          "sourceSample": "1400",
+          "targetColumn": "field_4891",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 127813,
+          "status": "OK (src 127813, db 127813)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4900"
+          ],
+          "sourceKeyMatched": "4900",
+          "sourceNonNullCountAcrossYears": 124754,
+          "sourceSample": "2642",
+          "targetColumn": "field_4900",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 124754,
+          "status": "OK (src 124754, db 124754)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4910"
+          ],
+          "sourceKeyMatched": "4910",
+          "sourceNonNullCountAcrossYears": 25638,
+          "sourceSample": "46000",
+          "targetColumn": "field_4910",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 25638,
+          "status": "OK (src 25638, db 25638)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4920"
+          ],
+          "sourceKeyMatched": "4920",
+          "sourceNonNullCountAcrossYears": 337001,
+          "sourceSample": "826",
+          "targetColumn": "field_4920",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 337001,
+          "status": "OK (src 337001, db 337001)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4950"
+          ],
+          "sourceKeyMatched": "4950",
+          "sourceNonNullCountAcrossYears": 398525,
+          "sourceSample": "7155",
+          "targetColumn": "field_4950",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 398521,
+          "status": "OK (src 398525, db 398521)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5000"
+          ],
+          "sourceKeyMatched": "5000",
+          "sourceNonNullCountAcrossYears": 305456,
+          "sourceSample": "827",
+          "targetColumn": "field_5000",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 305452,
+          "status": "OK (src 305456, db 305452)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5010"
+          ],
+          "sourceKeyMatched": "5010",
+          "sourceNonNullCountAcrossYears": 290952,
+          "sourceSample": "6328",
+          "targetColumn": "field_5010",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 290952,
+          "status": "OK (src 290952, db 290952)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5020"
+          ],
+          "sourceKeyMatched": "5020",
+          "sourceNonNullCountAcrossYears": 77557,
+          "sourceSample": "11455",
+          "targetColumn": "field_5020",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 77557,
+          "status": "OK (src 77557, db 77557)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5030"
+          ],
+          "sourceKeyMatched": "5030",
+          "sourceNonNullCountAcrossYears": 19,
+          "sourceSample": "5298",
+          "targetColumn": "field_5030",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 19,
+          "status": "OK (src 19, db 19)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5040"
+          ],
+          "sourceKeyMatched": "5040",
+          "sourceNonNullCountAcrossYears": 41188,
+          "sourceSample": "29318",
+          "targetColumn": "field_5040",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 41188,
+          "status": "OK (src 41188, db 41188)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5045"
+          ],
+          "sourceKeyMatched": "5045",
+          "sourceNonNullCountAcrossYears": 19040,
+          "sourceSample": "0",
+          "targetColumn": "field_5045",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 19040,
+          "status": "OK (src 19040, db 19040)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5050"
+          ],
+          "sourceKeyMatched": "5050",
+          "sourceNonNullCountAcrossYears": 160903,
+          "sourceSample": "2500",
+          "targetColumn": "field_5050",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 160903,
+          "status": "OK (src 160903, db 160903)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5100"
+          ],
+          "sourceKeyMatched": "5100",
+          "sourceNonNullCountAcrossYears": 400619,
+          "sourceSample": "9655",
+          "targetColumn": "field_5100",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 400619,
+          "status": "OK (src 400619, db 400619)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5500"
+          ],
+          "sourceKeyMatched": "5500",
+          "sourceNonNullCountAcrossYears": 9554,
+          "sourceSample": "0",
+          "targetColumn": "field_5500",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 9554,
+          "status": "OK (src 9554, db 9554)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5510"
+          ],
+          "sourceKeyMatched": "5510",
+          "sourceNonNullCountAcrossYears": 7969,
+          "sourceSample": "0",
+          "targetColumn": "field_5510",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 7969,
+          "status": "OK (src 7969, db 7969)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5610"
+          ],
+          "sourceKeyMatched": "5610",
+          "sourceNonNullCountAcrossYears": 12510,
+          "sourceSample": "0",
+          "targetColumn": "field_5610",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 12510,
+          "status": "OK (src 12510, db 12510)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5750"
+          ],
+          "sourceKeyMatched": "5750",
+          "sourceNonNullCountAcrossYears": 6065,
+          "sourceSample": "0",
+          "targetColumn": "field_5750",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 6065,
+          "status": "OK (src 6065, db 6065)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5900"
+          ],
+          "sourceKeyMatched": "5900",
+          "sourceNonNullCountAcrossYears": 66306,
+          "sourceSample": "0",
+          "targetColumn": "field_5900",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 66306,
+          "status": "OK (src 66306, db 66306)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5910"
+          ],
+          "sourceKeyMatched": "5910",
+          "sourceNonNullCountAcrossYears": 67003,
+          "sourceSample": "0",
+          "targetColumn": "field_5910",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 67003,
+          "status": "OK (src 67003, db 67003)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4400"
+          ],
+          "sourceKeyMatched": "4400",
+          "sourceNonNullCountAcrossYears": 125968,
+          "sourceSample": "N",
+          "targetColumn": "field_4400",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 125968,
+          "status": "OK (src 125968, db 125968)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4490"
+          ],
+          "sourceKeyMatched": "4490",
+          "sourceNonNullCountAcrossYears": 131614,
+          "sourceSample": "Y",
+          "targetColumn": "field_4490",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 131614,
+          "status": "OK (src 131614, db 131614)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4565"
+          ],
+          "sourceKeyMatched": "4565",
+          "sourceNonNullCountAcrossYears": 123632,
+          "sourceSample": "N",
+          "targetColumn": "field_4565",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 123632,
+          "status": "OK (src 123632, db 123632)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4655"
+          ],
+          "sourceKeyMatched": "4655",
+          "sourceNonNullCountAcrossYears": 98462,
+          "sourceSample": "UNB  2019 Summer Employment   Grant & 2020 Trail Guide adver",
+          "targetColumn": "field_4655",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 98462,
+          "status": "OK (src 98462, db 98462)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4930"
+          ],
+          "sourceKeyMatched": "4930",
+          "sourceNonNullCountAcrossYears": 150905,
+          "sourceSample": "Insurance",
+          "targetColumn": "field_4930",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 150905,
+          "status": "OK (src 150905, db 150905)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [
+        {
+          "column_name": "field_5030_indicator",
+          "data_type": "text",
+          "dbNonNullCount": 0
+        }
+      ],
+      "knownDefects": []
+    },
+    "general_info": {
+      "id": 4,
+      "name": "General Information",
+      "t3010Section": "Sections A, B, and C",
+      "description": "Program areas, Y/N questionnaire flags, boolean indicators",
+      "sourceUuidsByYear": {
+        "2020": "e62ec7b2-b40e-4d8d-954f-d2e71a71b69b",
+        "2021": "be944ec3-c8c7-42ed-a9f7-8c9b7c023276",
+        "2022": "2ca3e064-2971-44a2-8c7a-e2dd2bb0858c",
+        "2023": "4cf7d8fa-221a-4934-a423-82dbeac7462b",
+        "2024": "fd7c8679-8032-4613-b2b7-44fb8bc9c7c9"
+      },
+      "databaseTable": "cra_financial_general",
+      "primaryKey": [
+        "bn",
+        "fpe"
+      ],
+      "totalRowsInDb": 422683,
+      "totalRowsInCachedSource": 422683,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 422683,
+          "sourceSample": "831282512RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 422683,
+          "status": "OK (src 422683, db 422683)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 422683,
+          "sourceSample": "2020-01-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 422683,
+          "status": "OK (src 422683, db 422683)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 422683,
+          "sourceSample": "24",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 422683,
+          "status": "OK (src 422683, db 422683)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Program Area 1",
+            "Program #1 Code"
+          ],
+          "sourceKeyMatched": "Program #1 Code",
+          "sourceNonNullCountAcrossYears": 12549,
+          "sourceSample": "H15",
+          "targetColumn": "program_area_1",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 12549,
+          "status": "OK (src 12549, db 12549)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Program Area 2",
+            "Program #2 Code"
+          ],
+          "sourceKeyMatched": "Program #2 Code",
+          "sourceNonNullCountAcrossYears": 6907,
+          "sourceSample": "A12",
+          "targetColumn": "program_area_2",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 6907,
+          "status": "OK (src 6907, db 6907)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Program Area 3",
+            "Program #3 Code"
+          ],
+          "sourceKeyMatched": "Program #3 Code",
+          "sourceNonNullCountAcrossYears": 4862,
+          "sourceSample": "I1",
+          "targetColumn": "program_area_3",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 4862,
+          "status": "OK (src 4862, db 4862)"
+        },
+        {
+          "sourceKeyAliases": [
+            "% 1",
+            "Program #1 %"
+          ],
+          "sourceKeyMatched": "Program #1 %",
+          "sourceNonNullCountAcrossYears": 12250,
+          "sourceSample": "100",
+          "targetColumn": "program_percentage_1",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 12250,
+          "status": "OK (src 12250, db 12250)"
+        },
+        {
+          "sourceKeyAliases": [
+            "% 2",
+            "Program #2 %"
+          ],
+          "sourceKeyMatched": "Program #2 %",
+          "sourceNonNullCountAcrossYears": 6718,
+          "sourceSample": "100",
+          "targetColumn": "program_percentage_2",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 6718,
+          "status": "OK (src 6718, db 6718)"
+        },
+        {
+          "sourceKeyAliases": [
+            "% 3",
+            "Program #3 %"
+          ],
+          "sourceKeyMatched": "Program #3 %",
+          "sourceNonNullCountAcrossYears": 4725,
+          "sourceSample": "100",
+          "targetColumn": "program_percentage_3",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 4725,
+          "status": "OK (src 4725, db 4725)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Program #1 Desc"
+          ],
+          "sourceKeyMatched": "Program #1 Desc",
+          "sourceNonNullCountAcrossYears": 813,
+          "sourceSample": "Door to Door rural transit services",
+          "targetColumn": "program_description_1",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 813,
+          "status": "OK (src 813, db 813)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Program #2 Desc"
+          ],
+          "sourceKeyMatched": "Program #2 Desc",
+          "sourceNonNullCountAcrossYears": 533,
+          "sourceSample": "Autres : Agriculture, jardinage mineure, etc.",
+          "targetColumn": "program_description_2",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 533,
+          "status": "OK (src 533, db 533)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Program #3 Desc"
+          ],
+          "sourceKeyMatched": "Program #3 Desc",
+          "sourceNonNullCountAcrossYears": 485,
+          "sourceSample": "Assist in the settlement of privately sponsored refugee.",
+          "targetColumn": "program_description_3",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 485,
+          "status": "OK (src 485, db 485)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1510"
+          ],
+          "sourceKeyMatched": "1510",
+          "sourceNonNullCountAcrossYears": 415527,
+          "sourceSample": "N",
+          "targetColumn": "field_1510_subordinate",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 415527,
+          "status": "OK (src 415527, db 415527)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1510-BN"
+          ],
+          "sourceKeyMatched": "1510-BN",
+          "sourceNonNullCountAcrossYears": 41917,
+          "sourceSample": "108091000RR0001",
+          "targetColumn": "field_1510_parent_bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 41917,
+          "status": "OK (src 41917, db 41917)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1510-Name"
+          ],
+          "sourceKeyMatched": "1510-Name",
+          "sourceNonNullCountAcrossYears": 49023,
+          "sourceSample": "THE ONTARIO HISTORICAL SOCIETY",
+          "targetColumn": "field_1510_parent_name",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 49023,
+          "status": "OK (src 49023, db 49023)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1510-01"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "internal_division_1510_01",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1510-02"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "internal_division_1510_02",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1510-03"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "internal_division_1510_03",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1510-04"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "internal_division_1510_04",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1510-05"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "internal_division_1510_05",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1570"
+          ],
+          "sourceKeyMatched": "1570",
+          "sourceNonNullCountAcrossYears": 420242,
+          "sourceSample": "N",
+          "targetColumn": "field_1570",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 420242,
+          "status": "OK (src 420242, db 420242)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1600"
+          ],
+          "sourceKeyMatched": "1600",
+          "sourceNonNullCountAcrossYears": 418839,
+          "sourceSample": "Y",
+          "targetColumn": "field_1600",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 418839,
+          "status": "OK (src 418839, db 418839)"
+        },
+        {
+          "sourceKeyAliases": [
+            "1800"
+          ],
+          "sourceKeyMatched": "1800",
+          "sourceNonNullCountAcrossYears": 414578,
+          "sourceSample": "Y",
+          "targetColumn": "field_1800",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 414578,
+          "status": "OK (src 414578, db 414578)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2000"
+          ],
+          "sourceKeyMatched": "2000",
+          "sourceNonNullCountAcrossYears": 420660,
+          "sourceSample": "Y",
+          "targetColumn": "field_2000",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 420660,
+          "status": "OK (src 420660, db 420660)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2100"
+          ],
+          "sourceKeyMatched": "2100",
+          "sourceNonNullCountAcrossYears": 419759,
+          "sourceSample": "N",
+          "targetColumn": "field_2100",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 419759,
+          "status": "OK (src 419759, db 419759)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2400"
+          ],
+          "sourceKeyMatched": "2400",
+          "sourceNonNullCountAcrossYears": 32370,
+          "sourceSample": "N",
+          "targetColumn": "field_2400",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 32370,
+          "status": "OK (src 32370, db 32370)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2500"
+          ],
+          "sourceKeyMatched": "2500",
+          "sourceNonNullCountAcrossYears": 44559,
+          "sourceSample": "Y",
+          "targetColumn": "field_2500",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 44559,
+          "status": "OK (src 44559, db 44559)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2510"
+          ],
+          "sourceKeyMatched": "2510",
+          "sourceNonNullCountAcrossYears": 22970,
+          "sourceSample": "Y",
+          "targetColumn": "field_2510",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 22970,
+          "status": "OK (src 22970, db 22970)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2530"
+          ],
+          "sourceKeyMatched": "2530",
+          "sourceNonNullCountAcrossYears": 98535,
+          "sourceSample": "Y",
+          "targetColumn": "field_2530",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 98535,
+          "status": "OK (src 98535, db 98535)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2540"
+          ],
+          "sourceKeyMatched": "2540",
+          "sourceNonNullCountAcrossYears": 4596,
+          "sourceSample": "Y",
+          "targetColumn": "field_2540",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 4596,
+          "status": "OK (src 4596, db 4596)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2550"
+          ],
+          "sourceKeyMatched": "2550",
+          "sourceNonNullCountAcrossYears": 30696,
+          "sourceSample": "Y",
+          "targetColumn": "field_2550",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 30696,
+          "status": "OK (src 30696, db 30696)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2560"
+          ],
+          "sourceKeyMatched": "2560",
+          "sourceNonNullCountAcrossYears": 63978,
+          "sourceSample": "Y",
+          "targetColumn": "field_2560",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 63978,
+          "status": "OK (src 63978, db 63978)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2570"
+          ],
+          "sourceKeyMatched": "2570",
+          "sourceNonNullCountAcrossYears": 57080,
+          "sourceSample": "Y",
+          "targetColumn": "field_2570",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 57080,
+          "status": "OK (src 57080, db 57080)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2575"
+          ],
+          "sourceKeyMatched": "2575",
+          "sourceNonNullCountAcrossYears": 65504,
+          "sourceSample": "Y",
+          "targetColumn": "field_2575",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 65504,
+          "status": "OK (src 65504, db 65504)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2580"
+          ],
+          "sourceKeyMatched": "2580",
+          "sourceNonNullCountAcrossYears": 46300,
+          "sourceSample": "Y",
+          "targetColumn": "field_2580",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 46300,
+          "status": "OK (src 46300, db 46300)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2590"
+          ],
+          "sourceKeyMatched": "2590",
+          "sourceNonNullCountAcrossYears": 29273,
+          "sourceSample": "Y",
+          "targetColumn": "field_2590",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 29273,
+          "status": "OK (src 29273, db 29273)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2600"
+          ],
+          "sourceKeyMatched": "2600",
+          "sourceNonNullCountAcrossYears": 58033,
+          "sourceSample": "Y",
+          "targetColumn": "field_2600",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 58033,
+          "status": "OK (src 58033, db 58033)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2610"
+          ],
+          "sourceKeyMatched": "2610",
+          "sourceNonNullCountAcrossYears": 59677,
+          "sourceSample": "Y",
+          "targetColumn": "field_2610",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 59677,
+          "status": "OK (src 59677, db 59677)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2620"
+          ],
+          "sourceKeyMatched": "2620",
+          "sourceNonNullCountAcrossYears": 9013,
+          "sourceSample": "Y",
+          "targetColumn": "field_2620",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 9013,
+          "status": "OK (src 9013, db 9013)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2630"
+          ],
+          "sourceKeyMatched": "2630",
+          "sourceNonNullCountAcrossYears": 18317,
+          "sourceSample": "Y",
+          "targetColumn": "field_2630",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 18317,
+          "status": "OK (src 18317, db 18317)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2640"
+          ],
+          "sourceKeyMatched": "2640",
+          "sourceNonNullCountAcrossYears": 9554,
+          "sourceSample": "Y",
+          "targetColumn": "field_2640",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 9554,
+          "status": "OK (src 9554, db 9554)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2650"
+          ],
+          "sourceKeyMatched": "2650",
+          "sourceNonNullCountAcrossYears": 58711,
+          "sourceSample": "Y",
+          "targetColumn": "field_2650",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 58711,
+          "status": "OK (src 58711, db 58711)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2700"
+          ],
+          "sourceKeyMatched": "2700",
+          "sourceNonNullCountAcrossYears": 416883,
+          "sourceSample": "N",
+          "targetColumn": "field_2700",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 416883,
+          "status": "OK (src 416883, db 416883)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2730"
+          ],
+          "sourceKeyMatched": "2730",
+          "sourceNonNullCountAcrossYears": 2285,
+          "sourceSample": "Y",
+          "targetColumn": "field_2730",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 2285,
+          "status": "OK (src 2285, db 2285)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2740"
+          ],
+          "sourceKeyMatched": "2740",
+          "sourceNonNullCountAcrossYears": 13,
+          "sourceSample": "Y",
+          "targetColumn": "field_2740",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 13,
+          "status": "OK (src 13, db 13)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2750"
+          ],
+          "sourceKeyMatched": "2750",
+          "sourceNonNullCountAcrossYears": 100,
+          "sourceSample": "Y",
+          "targetColumn": "field_2750",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 100,
+          "status": "OK (src 100, db 100)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2760"
+          ],
+          "sourceKeyMatched": "2760",
+          "sourceNonNullCountAcrossYears": 3554,
+          "sourceSample": "Y",
+          "targetColumn": "field_2760",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 3554,
+          "status": "OK (src 3554, db 3554)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2770"
+          ],
+          "sourceKeyMatched": "2770",
+          "sourceNonNullCountAcrossYears": 212,
+          "sourceSample": "Y",
+          "targetColumn": "field_2770",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 212,
+          "status": "OK (src 212, db 212)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2780"
+          ],
+          "sourceKeyMatched": "2780",
+          "sourceNonNullCountAcrossYears": 1236,
+          "sourceSample": "Y",
+          "targetColumn": "field_2780",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 1236,
+          "status": "OK (src 1236, db 1236)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2800"
+          ],
+          "sourceKeyMatched": "2800",
+          "sourceNonNullCountAcrossYears": 7260,
+          "sourceSample": "Y",
+          "targetColumn": "field_2800",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 7260,
+          "status": "OK (src 7260, db 7260)"
+        },
+        {
+          "sourceKeyAliases": [
+            "3200"
+          ],
+          "sourceKeyMatched": "3200",
+          "sourceNonNullCountAcrossYears": 418798,
+          "sourceSample": "N",
+          "targetColumn": "field_3200",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 418798,
+          "status": "OK (src 418798, db 418798)"
+        },
+        {
+          "sourceKeyAliases": [
+            "3400"
+          ],
+          "sourceKeyMatched": "3400",
+          "sourceNonNullCountAcrossYears": 420689,
+          "sourceSample": "N",
+          "targetColumn": "field_3400",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 420689,
+          "status": "OK (src 420689, db 420689)"
+        },
+        {
+          "sourceKeyAliases": [
+            "3900"
+          ],
+          "sourceKeyMatched": "3900",
+          "sourceNonNullCountAcrossYears": 419741,
+          "sourceSample": "N",
+          "targetColumn": "field_3900",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 419741,
+          "status": "OK (src 419741, db 419741)"
+        },
+        {
+          "sourceKeyAliases": [
+            "4000"
+          ],
+          "sourceKeyMatched": "4000",
+          "sourceNonNullCountAcrossYears": 419667,
+          "sourceSample": "N",
+          "targetColumn": "field_4000",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 419667,
+          "status": "OK (src 419667, db 419667)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5800"
+          ],
+          "sourceKeyMatched": "5800",
+          "sourceNonNullCountAcrossYears": 419793,
+          "sourceSample": "N",
+          "targetColumn": "field_5800",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 419793,
+          "status": "OK (src 419793, db 419793)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5810"
+          ],
+          "sourceKeyMatched": "5810",
+          "sourceNonNullCountAcrossYears": 419655,
+          "sourceSample": "N",
+          "targetColumn": "field_5810",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 419655,
+          "status": "OK (src 419655, db 419655)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5820"
+          ],
+          "sourceKeyMatched": "5820",
+          "sourceNonNullCountAcrossYears": 419762,
+          "sourceSample": "N",
+          "targetColumn": "field_5820",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 419762,
+          "status": "OK (src 419762, db 419762)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5830"
+          ],
+          "sourceKeyMatched": "5830",
+          "sourceNonNullCountAcrossYears": 418895,
+          "sourceSample": "N",
+          "targetColumn": "field_5830",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 418895,
+          "status": "OK (src 418895, db 418895)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5840"
+          ],
+          "sourceKeyMatched": "5840",
+          "sourceNonNullCountAcrossYears": 165355,
+          "sourceSample": "N",
+          "targetColumn": "field_5840",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 165355,
+          "status": "OK (src 165355, db 165355)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5841"
+          ],
+          "sourceKeyMatched": "5841",
+          "sourceNonNullCountAcrossYears": 5092,
+          "sourceSample": "Y",
+          "targetColumn": "field_5841",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 5092,
+          "status": "OK (src 5092, db 5092)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5850"
+          ],
+          "sourceKeyMatched": "5850",
+          "sourceNonNullCountAcrossYears": 129815,
+          "sourceSample": "N",
+          "targetColumn": "field_5850",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 129815,
+          "status": "OK (src 129815, db 129815)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5860"
+          ],
+          "sourceKeyMatched": "5860",
+          "sourceNonNullCountAcrossYears": 117552,
+          "sourceSample": "N",
+          "targetColumn": "field_5860",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 117552,
+          "status": "OK (src 117552, db 117552)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5030"
+          ],
+          "sourceKeyMatched": "5030",
+          "sourceNonNullCountAcrossYears": 13,
+          "sourceSample": "5298",
+          "targetColumn": "field_5030",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 13,
+          "status": "OK (src 13, db 13)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5031"
+          ],
+          "sourceKeyMatched": "5031",
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "field_5031",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (both empty)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5032"
+          ],
+          "sourceKeyMatched": "5032",
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "field_5032",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (both empty)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5450"
+          ],
+          "sourceKeyMatched": "5450",
+          "sourceNonNullCountAcrossYears": 6613,
+          "sourceSample": "400",
+          "targetColumn": "field_5450",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 6612,
+          "status": "OK (src 6613, db 6612)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5460"
+          ],
+          "sourceKeyMatched": "5460",
+          "sourceNonNullCountAcrossYears": 6800,
+          "sourceSample": "16",
+          "targetColumn": "field_5460",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 6800,
+          "status": "OK (src 6800, db 6800)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5843"
+          ],
+          "sourceKeyMatched": "5843",
+          "sourceNonNullCountAcrossYears": 3536,
+          "sourceSample": "0",
+          "targetColumn": "field_5843",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 3536,
+          "status": "OK (src 3536, db 3536)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5862"
+          ],
+          "sourceKeyMatched": "5862",
+          "sourceNonNullCountAcrossYears": 1167,
+          "sourceSample": "100908",
+          "targetColumn": "field_5862",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 1167,
+          "status": "OK (src 1167, db 1167)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5863"
+          ],
+          "sourceKeyMatched": "5863",
+          "sourceNonNullCountAcrossYears": 966,
+          "sourceSample": "119759",
+          "targetColumn": "field_5863",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 966,
+          "status": "OK (src 966, db 966)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5864"
+          ],
+          "sourceKeyMatched": "5864",
+          "sourceNonNullCountAcrossYears": 965,
+          "sourceSample": "0",
+          "targetColumn": "field_5864",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 965,
+          "status": "OK (src 965, db 965)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5842"
+          ],
+          "sourceKeyMatched": "5842",
+          "sourceNonNullCountAcrossYears": 3476,
+          "sourceSample": "0",
+          "targetColumn": "field_5842",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 3476,
+          "status": "OK (src 3476, db 3476)"
+        },
+        {
+          "sourceKeyAliases": [
+            "5861"
+          ],
+          "sourceKeyMatched": "5861",
+          "sourceNonNullCountAcrossYears": 1171,
+          "sourceSample": "7",
+          "targetColumn": "field_5861",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 1171,
+          "status": "OK (src 1171, db 1171)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2660"
+          ],
+          "sourceKeyMatched": "2660",
+          "sourceNonNullCountAcrossYears": 55563,
+          "sourceSample": "Email campaigns",
+          "targetColumn": "field_2660",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 55563,
+          "status": "OK (src 55563, db 55563)"
+        },
+        {
+          "sourceKeyAliases": [
+            "2790"
+          ],
+          "sourceKeyMatched": "2790",
+          "sourceNonNullCountAcrossYears": 1224,
+          "sourceSample": "PROCESSING FEES",
+          "targetColumn": "field_2790",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 1224,
+          "status": "OK (src 1224, db 1224)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [
+        {
+          "column_name": "field_1610",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_1620",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_1630",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_1640",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_1650",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_2110",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_2300",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_2350",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_2520",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3205",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3210",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3220",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3230",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3235",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3240",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3250",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3260",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3270",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3600",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_3610",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_4010",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5000",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5010",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5844",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5845",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5846",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5847",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5848",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5849",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5851",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5852",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5853",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5854",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5855",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5856",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5857",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5858",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        },
+        {
+          "column_name": "field_5859",
+          "data_type": "boolean",
+          "dbNonNullCount": 0
+        }
+      ],
+      "knownDefects": []
+    },
+    "charitable_programs": {
+      "id": 5,
+      "name": "Charitable Programs",
+      "t3010Section": "Section B - Programs",
+      "description": "Program descriptions by type (ongoing, new, inactive)",
+      "sourceUuidsByYear": {
+        "2020": "ea23ff3a-f1f5-4517-b591-d8fea4d401e7",
+        "2021": "6695faf6-3810-48ad-880b-02028b1942c9",
+        "2022": "a7b7ac42-4322-4748-9361-5794c5957a45",
+        "2023": "b02f94b3-6555-4315-96ab-2658f61290c5",
+        "2024": "1f16eb1b-cc03-4c95-a81c-0fdc0722c5ee"
+      },
+      "databaseTable": "cra_charitable_programs",
+      "primaryKey": [
+        "bn",
+        "fpe",
+        "program_type"
+      ],
+      "totalRowsInDb": 478691,
+      "totalRowsInCachedSource": 478691,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 478691,
+          "sourceSample": "831282512RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 478691,
+          "status": "OK (src 478691, db 478691)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 478691,
+          "sourceSample": "2020-01-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 478691,
+          "status": "OK (src 478691, db 478691)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FormID",
+            "Form ID"
+          ],
+          "sourceKeyMatched": "FormID",
+          "sourceNonNullCountAcrossYears": 95570,
+          "sourceSample": "25",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 478691,
+          "status": "OK (src 95570, db 478691)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Program Type",
+            "ProgramType"
+          ],
+          "sourceKeyMatched": "Program Type",
+          "sourceNonNullCountAcrossYears": 478691,
+          "sourceSample": "OP",
+          "targetColumn": "program_type",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 478691,
+          "status": "OK (src 478691, db 478691)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Description"
+          ],
+          "sourceKeyMatched": "Description",
+          "sourceNonNullCountAcrossYears": 478691,
+          "sourceSample": "Fundraising through private citizens to distribute to qualif",
+          "targetColumn": "description",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 478691,
+          "status": "OK (src 478691, db 478691)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "non_qualified_donees": {
+      "id": 6,
+      "name": "Non-Qualified Donees",
+      "t3010Section": "Grants to Non-Qualified Donees",
+      "description": "Grants to individuals/organizations that are not qualified donees",
+      "sourceUuidsByYear": {
+        "2020": "00fddc7f-f62f-4b8d-aa35-1943433a95b9",
+        "2021": "fd2931b4-3b1a-4252-a8a8-4c4218eda613",
+        "2022": "0b912228-e5a5-4c4a-aa0b-b8ec78ee3cf0",
+        "2023": "d205c11b-9803-4d3a-8ac8-ab7b648d145b",
+        "2024": "f4eb196a-d0c1-45b0-bc48-e9b48c06cbce"
+      },
+      "databaseTable": "cra_non_qualified_donees",
+      "primaryKey": [
+        "bn",
+        "fpe",
+        "sequence_number"
+      ],
+      "totalRowsInDb": 29270,
+      "totalRowsInCachedSource": 29270,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 29270,
+          "sourceSample": "805222759RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 29270,
+          "status": "OK (src 29270, db 29270)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 29270,
+          "sourceSample": "2022-12-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 29270,
+          "status": "OK (src 29270, db 29270)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 29270,
+          "sourceSample": "26",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 29270,
+          "status": "OK (src 29270, db 29270)"
+        },
+        {
+          "sourceKeyAliases": [
+            "#"
+          ],
+          "sourceKeyMatched": "#",
+          "sourceNonNullCountAcrossYears": 29270,
+          "sourceSample": "0000000001",
+          "targetColumn": "sequence_number",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 29270,
+          "status": "OK (src 29270, db 29270)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Recipient name",
+            "Recipient Name"
+          ],
+          "sourceKeyMatched": "Recipient name",
+          "sourceNonNullCountAcrossYears": 29249,
+          "sourceSample": "Canadian Autism Spectrum Disorder Alliance",
+          "targetColumn": "recipient_name",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 29249,
+          "status": "OK (src 29249, db 29249)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Purpose"
+          ],
+          "sourceKeyMatched": "Purpose",
+          "sourceNonNullCountAcrossYears": 28373,
+          "sourceSample": "To fund the publication of the Canadian Journal of Autism Eq",
+          "targetColumn": "purpose",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 28373,
+          "status": "OK (src 28373, db 28373)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Cash amount",
+            "Cash Amount"
+          ],
+          "sourceKeyMatched": "Cash amount",
+          "sourceNonNullCountAcrossYears": 26234,
+          "sourceSample": "25000",
+          "targetColumn": "cash_amount",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 26234,
+          "status": "OK (src 26234, db 26234)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Non-cash amount",
+            "Non-cash Amount",
+            "Non-Cash Amount"
+          ],
+          "sourceKeyMatched": "Non-cash amount",
+          "sourceNonNullCountAcrossYears": 3845,
+          "sourceSample": "200",
+          "targetColumn": "non_cash_amount",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 3845,
+          "status": "OK (src 3845, db 3845)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Country"
+          ],
+          "sourceKeyMatched": "Country",
+          "sourceNonNullCountAcrossYears": 4819,
+          "sourceSample": "Vatican",
+          "targetColumn": "country",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 4819,
+          "status": "OK (src 4819, db 4819)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "qualified_donees": {
+      "id": 7,
+      "name": "Qualified Donees",
+      "t3010Section": "Gifts to Qualified Donees",
+      "description": "Gifts to other registered charities",
+      "sourceUuidsByYear": {
+        "2020": "e5f674fc-a8a6-4844-8bd8-7fc4a8a67282",
+        "2021": "11556a79-d5a8-4a24-b3d3-348d08ad6ee9",
+        "2022": "af071c2f-e88d-4d9f-9d1c-173bcb161d3e",
+        "2023": "c603fe1f-cc4c-480e-b1cd-7fd949c42487",
+        "2024": "e945d3ac-ce8c-40c9-a322-47f477d6a8de"
+      },
+      "databaseTable": "cra_qualified_donees",
+      "primaryKey": [
+        "bn",
+        "fpe",
+        "sequence_number"
+      ],
+      "totalRowsInDb": 1664343,
+      "totalRowsInCachedSource": 1664343,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 1664343,
+          "sourceSample": "831282512RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 1664343,
+          "status": "OK (src 1664343, db 1664343)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 1664343,
+          "sourceSample": "2020-01-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 1664343,
+          "status": "OK (src 1664343, db 1664343)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FormID",
+            "Form ID"
+          ],
+          "sourceKeyMatched": "FormID",
+          "sourceNonNullCountAcrossYears": 349307,
+          "sourceSample": "25",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 1664343,
+          "status": "OK (src 349307, db 1664343)"
+        },
+        {
+          "sourceKeyAliases": [
+            "#"
+          ],
+          "sourceKeyMatched": "#",
+          "sourceNonNullCountAcrossYears": 1664343,
+          "sourceSample": "000000001",
+          "targetColumn": "sequence_number",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 1664343,
+          "status": "OK (src 1664343, db 1664343)"
+        },
+        {
+          "sourceKeyAliases": [
+            "DoneeBN",
+            "Donee BN"
+          ],
+          "sourceKeyMatched": "DoneeBN",
+          "sourceNonNullCountAcrossYears": 317407,
+          "sourceSample": "108162330RR0001",
+          "targetColumn": "donee_bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 1554347,
+          "status": "OK (src 317407, db 1554347)"
+        },
+        {
+          "sourceKeyAliases": [
+            "DoneeName",
+            "Donee Name"
+          ],
+          "sourceKeyMatched": "DoneeName",
+          "sourceNonNullCountAcrossYears": 349057,
+          "sourceSample": "UNIVERSITY OF TORONTO",
+          "targetColumn": "donee_name",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 1663508,
+          "status": "OK (src 349057, db 1663508)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Associated"
+          ],
+          "sourceKeyMatched": "Associated",
+          "sourceNonNullCountAcrossYears": 1132647,
+          "sourceSample": "N",
+          "targetColumn": "associated",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 1132647,
+          "status": "OK (src 1132647, db 1132647)"
+        },
+        {
+          "sourceKeyAliases": [
+            "City"
+          ],
+          "sourceKeyMatched": "City",
+          "sourceNonNullCountAcrossYears": 1482420,
+          "sourceSample": "Orangeville",
+          "targetColumn": "city",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 1482420,
+          "status": "OK (src 1482420, db 1482420)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Province"
+          ],
+          "sourceKeyMatched": "Province",
+          "sourceNonNullCountAcrossYears": 1415641,
+          "sourceSample": "ON",
+          "targetColumn": "province",
+          "targetDataType": "character varying",
+          "transform": "cleanCode2",
+          "defect": null,
+          "dbNonNullCount": 1415641,
+          "status": "OK (src 1415641, db 1415641)"
+        },
+        {
+          "sourceKeyAliases": [
+            "TotalGifts",
+            "Total Gifts"
+          ],
+          "sourceKeyMatched": "TotalGifts",
+          "sourceNonNullCountAcrossYears": 341981,
+          "sourceSample": "21628",
+          "targetColumn": "total_gifts",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 1622354,
+          "status": "OK (src 341981, db 1622354)"
+        },
+        {
+          "sourceKeyAliases": [
+            "GiftsinKind",
+            "Gifts in Kind"
+          ],
+          "sourceKeyMatched": "GiftsinKind",
+          "sourceNonNullCountAcrossYears": 19077,
+          "sourceSample": "0",
+          "targetColumn": "gifts_in_kind",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 92866,
+          "status": "OK (src 19077, db 92866)"
+        },
+        {
+          "sourceKeyAliases": [
+            "PoliticalActivityGift",
+            "Political Activity Gift"
+          ],
+          "sourceKeyMatched": "PoliticalActivityGift",
+          "sourceNonNullCountAcrossYears": 54,
+          "sourceSample": "N",
+          "targetColumn": "political_activity_gift",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 4478,
+          "status": "OK (src 54, db 4478)"
+        },
+        {
+          "sourceKeyAliases": [
+            "PoliticalActivityAmount",
+            "Political Activity Amount"
+          ],
+          "sourceKeyMatched": "PoliticalActivityAmount",
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "political_activity_amount",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (both empty)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [
+        {
+          "column_name": "number_of_donees",
+          "data_type": "integer",
+          "dbNonNullCount": 0
+        }
+      ],
+      "knownDefects": []
+    },
+    "foundation_info": {
+      "id": 8,
+      "name": "Private/Public Foundations",
+      "t3010Section": "Schedule 1 - Foundations",
+      "description": "Foundation-specific financial data",
+      "sourceUuidsByYear": {
+        "2020": "9e979c5f-bdac-4f6d-990b-255fa533226d",
+        "2021": "80e3c7f9-e3b9-43d0-9053-f7359c305dcb",
+        "2022": "abd0d652-de97-44bb-884a-a8a196890174",
+        "2023": "3ef352d3-037d-48fb-98c0-f5e5b7ee5b89",
+        "2024": "72c8fab0-24c8-4351-a673-efe7ee72bcf1"
+      },
+      "databaseTable": "cra_foundation_info",
+      "primaryKey": [
+        "bn",
+        "fpe"
+      ],
+      "totalRowsInDb": 422569,
+      "totalRowsInCachedSource": 422569,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 422569,
+          "sourceSample": "831282512RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 422569,
+          "status": "OK (src 422569, db 422569)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 422569,
+          "sourceSample": "2020-01-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 422569,
+          "status": "OK (src 422569, db 422569)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 422569,
+          "sourceSample": "24",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 422569,
+          "status": "OK (src 422569, db 422569)"
+        },
+        {
+          "sourceKeyAliases": [
+            "100"
+          ],
+          "sourceKeyMatched": "100",
+          "sourceNonNullCountAcrossYears": 53897,
+          "sourceSample": "N",
+          "targetColumn": "field_100",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 53897,
+          "status": "OK (src 53897, db 53897)"
+        },
+        {
+          "sourceKeyAliases": [
+            "110"
+          ],
+          "sourceKeyMatched": "110",
+          "sourceNonNullCountAcrossYears": 53676,
+          "sourceSample": "N",
+          "targetColumn": "field_110",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 53676,
+          "status": "OK (src 53676, db 53676)"
+        },
+        {
+          "sourceKeyAliases": [
+            "111"
+          ],
+          "sourceKeyMatched": "111",
+          "sourceNonNullCountAcrossYears": 4115,
+          "sourceSample": "0",
+          "targetColumn": "field_111",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 4115,
+          "status": "OK (src 4115, db 4115)"
+        },
+        {
+          "sourceKeyAliases": [
+            "112"
+          ],
+          "sourceKeyMatched": "112",
+          "sourceNonNullCountAcrossYears": 3222,
+          "sourceSample": "0",
+          "targetColumn": "field_112",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 3222,
+          "status": "OK (src 3222, db 3222)"
+        },
+        {
+          "sourceKeyAliases": [
+            "120"
+          ],
+          "sourceKeyMatched": "120",
+          "sourceNonNullCountAcrossYears": 39291,
+          "sourceSample": "N",
+          "targetColumn": "field_120",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 39291,
+          "status": "OK (src 39291, db 39291)"
+        },
+        {
+          "sourceKeyAliases": [
+            "130"
+          ],
+          "sourceKeyMatched": "130",
+          "sourceNonNullCountAcrossYears": 39224,
+          "sourceSample": "N",
+          "targetColumn": "field_130",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 39224,
+          "status": "OK (src 39224, db 39224)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "activities_outside_countries": {
+      "id": 9,
+      "name": "Activities Outside Canada - Countries",
+      "t3010Section": "Schedule 2 - Countries",
+      "description": "Countries where charitable programs were carried out",
+      "sourceUuidsByYear": {
+        "2020": "38ab0eea-e36c-435e-a00e-76c5571af7eb",
+        "2021": "6f052d29-443b-4cce-a0e2-eac8225d976c",
+        "2022": "b889b268-a1a2-49ed-b0e1-6715385a844f",
+        "2023": "489bf273-da0e-42fa-947c-3bc02dac28af",
+        "2024": "9a0a7b94-634b-4092-9a3b-e6001cf74f5b"
+      },
+      "databaseTable": "cra_activities_outside_countries",
+      "primaryKey": [
+        "bn",
+        "fpe",
+        "sequence_number"
+      ],
+      "totalRowsInDb": 44683,
+      "totalRowsInCachedSource": 44683,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 44683,
+          "sourceSample": "119235695RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 44683,
+          "status": "OK (src 44683, db 44683)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 44683,
+          "sourceSample": "2020-03-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 44683,
+          "status": "OK (src 44683, db 44683)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 44683,
+          "sourceSample": "24",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 44683,
+          "status": "OK (src 44683, db 44683)"
+        },
+        {
+          "sourceKeyAliases": [
+            "#"
+          ],
+          "sourceKeyMatched": "#",
+          "sourceNonNullCountAcrossYears": 44683,
+          "sourceSample": "000000001",
+          "targetColumn": "sequence_number",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 44683,
+          "status": "OK (src 44683, db 44683)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Country"
+          ],
+          "sourceKeyMatched": "Country",
+          "sourceNonNullCountAcrossYears": 44683,
+          "sourceSample": "MZ",
+          "targetColumn": "country",
+          "targetDataType": "character",
+          "transform": "cleanCode2",
+          "defect": null,
+          "dbNonNullCount": 44683,
+          "status": "OK (src 44683, db 44683)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "activities_outside_details": {
+      "id": 10,
+      "name": "Activities Outside Canada - Details",
+      "t3010Section": "Schedule 2 - Details",
+      "description": "Financial details on activities outside Canada",
+      "sourceUuidsByYear": {
+        "2020": "61265412-c557-4dce-9fa2-6806a975d809",
+        "2021": "07e21c04-e95e-4576-9847-828b28cb3788",
+        "2022": "b1732cca-1bb2-4465-9792-558591e7c0fc",
+        "2023": "558ac0f1-8261-4eec-b1a0-92b596062464",
+        "2024": "600fa0f0-6410-493e-a891-1ac25ddf8004"
+      },
+      "databaseTable": "cra_activities_outside_details",
+      "primaryKey": [
+        "bn",
+        "fpe"
+      ],
+      "totalRowsInDb": 25139,
+      "totalRowsInCachedSource": 25139,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 25139,
+          "sourceSample": "119235695RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 25139,
+          "status": "OK (src 25139, db 25139)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 25139,
+          "sourceSample": "2020-03-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 25139,
+          "status": "OK (src 25139, db 25139)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 25139,
+          "sourceSample": "24",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 25139,
+          "status": "OK (src 25139, db 25139)"
+        },
+        {
+          "sourceKeyAliases": [
+            "200"
+          ],
+          "sourceKeyMatched": "200",
+          "sourceNonNullCountAcrossYears": 22050,
+          "sourceSample": "1630",
+          "targetColumn": "field_200",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 22050,
+          "status": "OK (src 22050, db 22050)"
+        },
+        {
+          "sourceKeyAliases": [
+            "210"
+          ],
+          "sourceKeyMatched": "210",
+          "sourceNonNullCountAcrossYears": 24772,
+          "sourceSample": "N",
+          "targetColumn": "field_210",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 24772,
+          "status": "OK (src 24772, db 24772)"
+        },
+        {
+          "sourceKeyAliases": [
+            "220"
+          ],
+          "sourceKeyMatched": "220",
+          "sourceNonNullCountAcrossYears": 24513,
+          "sourceSample": "N",
+          "targetColumn": "field_220",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 24513,
+          "status": "OK (src 24513, db 24513)"
+        },
+        {
+          "sourceKeyAliases": [
+            "230"
+          ],
+          "sourceKeyMatched": "230",
+          "sourceNonNullCountAcrossYears": 670,
+          "sourceSample": "13631",
+          "targetColumn": "field_230",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 670,
+          "status": "OK (src 670, db 670)"
+        },
+        {
+          "sourceKeyAliases": [
+            "240"
+          ],
+          "sourceKeyMatched": "240",
+          "sourceNonNullCountAcrossYears": 24462,
+          "sourceSample": "N",
+          "targetColumn": "field_240",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 24462,
+          "status": "OK (src 24462, db 24462)"
+        },
+        {
+          "sourceKeyAliases": [
+            "250"
+          ],
+          "sourceKeyMatched": "250",
+          "sourceNonNullCountAcrossYears": 24499,
+          "sourceSample": "N",
+          "targetColumn": "field_250",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 24499,
+          "status": "OK (src 24499, db 24499)"
+        },
+        {
+          "sourceKeyAliases": [
+            "260"
+          ],
+          "sourceKeyMatched": "260",
+          "sourceNonNullCountAcrossYears": 24373,
+          "sourceSample": "N",
+          "targetColumn": "field_260",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 24373,
+          "status": "OK (src 24373, db 24373)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "exported_goods": {
+      "id": 11,
+      "name": "Exported Goods",
+      "t3010Section": "Schedule 2 - Exported Goods",
+      "description": "Goods exported outside Canada",
+      "sourceUuidsByYear": {
+        "2020": "3800840e-ff3a-483c-8f15-e33a0b761333",
+        "2021": "8ef9fc37-aa8f-4099-8f1e-9827d2a0cd03",
+        "2022": "fd631f06-e775-46eb-8f90-320279a2e23b",
+        "2023": "45b96a3b-afb8-46bc-8c66-4550208d8bd7",
+        "2024": "1229e5a8-a507-4f80-8926-6e931ff9ad47"
+      },
+      "databaseTable": "cra_exported_goods",
+      "primaryKey": [
+        "bn",
+        "fpe",
+        "sequence_number"
+      ],
+      "totalRowsInDb": 4029,
+      "totalRowsInCachedSource": 4029,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 4029,
+          "sourceSample": "118904598RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 4029,
+          "status": "OK (src 4029, db 4029)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 4029,
+          "sourceSample": "2020-06-30",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 4029,
+          "status": "OK (src 4029, db 4029)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 4029,
+          "sourceSample": "24",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 4029,
+          "status": "OK (src 4029, db 4029)"
+        },
+        {
+          "sourceKeyAliases": [
+            "#"
+          ],
+          "sourceKeyMatched": "#",
+          "sourceNonNullCountAcrossYears": 4029,
+          "sourceSample": "000000001",
+          "targetColumn": "sequence_number",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 4029,
+          "status": "OK (src 4029, db 4029)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Item Name"
+          ],
+          "sourceKeyMatched": "Item Name",
+          "sourceNonNullCountAcrossYears": 3989,
+          "sourceSample": "Free & Discounted Literature",
+          "targetColumn": "item_name",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 3989,
+          "status": "OK (src 3989, db 3989)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Item Value"
+          ],
+          "sourceKeyMatched": "Item Value",
+          "sourceNonNullCountAcrossYears": 3769,
+          "sourceSample": "1047",
+          "targetColumn": "item_value",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 3769,
+          "status": "OK (src 3769, db 3769)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Destination"
+          ],
+          "sourceKeyMatched": "Destination",
+          "sourceNonNullCountAcrossYears": 3660,
+          "sourceSample": "GHANA",
+          "targetColumn": "destination",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 3660,
+          "status": "OK (src 3660, db 3660)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Country"
+          ],
+          "sourceKeyMatched": "Country",
+          "sourceNonNullCountAcrossYears": 3934,
+          "sourceSample": "AU",
+          "targetColumn": "country",
+          "targetDataType": "character",
+          "transform": "cleanCode2",
+          "defect": null,
+          "dbNonNullCount": 3934,
+          "status": "OK (src 3934, db 3934)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "resources_sent_outside": {
+      "id": 12,
+      "name": "Resources Sent Outside Canada",
+      "t3010Section": "Schedule 2 - Resources",
+      "description": "Financial resources transferred outside Canada",
+      "sourceUuidsByYear": {
+        "2020": "586a345f-d801-47e6-aaa7-d59c2f52e30c",
+        "2021": "5623228d-3b1a-4088-8e95-c4a66904ac2f",
+        "2022": "9f93f12b-e889-4f29-9cac-03976e96678b",
+        "2023": "f650c51e-8c88-4804-bda7-adce4bceba7c",
+        "2024": "5d174c72-9dca-4961-88f2-fc8e6257941b"
+      },
+      "databaseTable": "cra_resources_sent_outside",
+      "primaryKey": [
+        "bn",
+        "fpe",
+        "sequence_number"
+      ],
+      "totalRowsInDb": 68028,
+      "totalRowsInCachedSource": 68028,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 68028,
+          "sourceSample": "119156578RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 68028,
+          "status": "OK (src 68028, db 68028)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 68028,
+          "sourceSample": "2020-03-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 68028,
+          "status": "OK (src 68028, db 68028)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 68028,
+          "sourceSample": "24",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 68028,
+          "status": "OK (src 68028, db 68028)"
+        },
+        {
+          "sourceKeyAliases": [
+            "#"
+          ],
+          "sourceKeyMatched": "#",
+          "sourceNonNullCountAcrossYears": 68028,
+          "sourceSample": "000000001",
+          "targetColumn": "sequence_number",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 68028,
+          "status": "OK (src 68028, db 68028)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Indiv/Org Name",
+            "Individual/Org Name"
+          ],
+          "sourceKeyMatched": "Indiv/Org Name",
+          "sourceNonNullCountAcrossYears": 66504,
+          "sourceSample": "Bala Vikasa Social Service Society",
+          "targetColumn": "individual_org_name",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 66504,
+          "status": "OK (src 66504, db 66504)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Amount"
+          ],
+          "sourceKeyMatched": "Amount",
+          "sourceNonNullCountAcrossYears": 67061,
+          "sourceSample": "701881",
+          "targetColumn": "amount",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 67061,
+          "status": "OK (src 67061, db 67061)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Country"
+          ],
+          "sourceKeyMatched": "Country",
+          "sourceNonNullCountAcrossYears": 65594,
+          "sourceSample": "IN",
+          "targetColumn": "country",
+          "targetDataType": "character",
+          "transform": "cleanCode2",
+          "defect": null,
+          "dbNonNullCount": 65594,
+          "status": "OK (src 65594, db 65594)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "compensation": {
+      "id": 13,
+      "name": "Compensation",
+      "t3010Section": "Schedule 3 - Compensation",
+      "description": "Employee compensation ranges and totals",
+      "sourceUuidsByYear": {
+        "2020": "07e38548-10d2-4461-841d-5e20c28ce96b",
+        "2021": "ec4d4a94-6eb6-4c05-b618-754f7f2bc78c",
+        "2022": "6439f41e-fa8d-474d-ab07-a5721a066274",
+        "2023": "aff519a3-a71e-4934-b052-dd29419be224",
+        "2024": "37fe5088-b30c-4713-9a42-5a3e7e08fcb0"
+      },
+      "databaseTable": "cra_compensation",
+      "primaryKey": [
+        "bn",
+        "fpe"
+      ],
+      "totalRowsInDb": 216380,
+      "totalRowsInCachedSource": 216380,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 216380,
+          "sourceSample": "828742486RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 216380,
+          "status": "OK (src 216380, db 216380)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 216380,
+          "sourceSample": "2020-01-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 216380,
+          "status": "OK (src 216380, db 216380)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 216380,
+          "sourceSample": "24",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 216380,
+          "status": "OK (src 216380, db 216380)"
+        },
+        {
+          "sourceKeyAliases": [
+            "300"
+          ],
+          "sourceKeyMatched": "300",
+          "sourceNonNullCountAcrossYears": 181363,
+          "sourceSample": "1",
+          "targetColumn": "field_300",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 181363,
+          "status": "OK (src 181363, db 181363)"
+        },
+        {
+          "sourceKeyAliases": [
+            "305"
+          ],
+          "sourceKeyMatched": "305",
+          "sourceNonNullCountAcrossYears": 90362,
+          "sourceSample": "1",
+          "targetColumn": "field_305",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 90362,
+          "status": "OK (src 90362, db 90362)"
+        },
+        {
+          "sourceKeyAliases": [
+            "310"
+          ],
+          "sourceKeyMatched": "310",
+          "sourceNonNullCountAcrossYears": 120381,
+          "sourceSample": "4",
+          "targetColumn": "field_310",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 120381,
+          "status": "OK (src 120381, db 120381)"
+        },
+        {
+          "sourceKeyAliases": [
+            "315"
+          ],
+          "sourceKeyMatched": "315",
+          "sourceNonNullCountAcrossYears": 56843,
+          "sourceSample": "7",
+          "targetColumn": "field_315",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 56843,
+          "status": "OK (src 56843, db 56843)"
+        },
+        {
+          "sourceKeyAliases": [
+            "320"
+          ],
+          "sourceKeyMatched": "320",
+          "sourceNonNullCountAcrossYears": 20687,
+          "sourceSample": "2",
+          "targetColumn": "field_320",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 20687,
+          "status": "OK (src 20687, db 20687)"
+        },
+        {
+          "sourceKeyAliases": [
+            "325"
+          ],
+          "sourceKeyMatched": "325",
+          "sourceNonNullCountAcrossYears": 10127,
+          "sourceSample": "1",
+          "targetColumn": "field_325",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 10127,
+          "status": "OK (src 10127, db 10127)"
+        },
+        {
+          "sourceKeyAliases": [
+            "330"
+          ],
+          "sourceKeyMatched": "330",
+          "sourceNonNullCountAcrossYears": 6431,
+          "sourceSample": "1",
+          "targetColumn": "field_330",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 6431,
+          "status": "OK (src 6431, db 6431)"
+        },
+        {
+          "sourceKeyAliases": [
+            "335"
+          ],
+          "sourceKeyMatched": "335",
+          "sourceNonNullCountAcrossYears": 3679,
+          "sourceSample": "0",
+          "targetColumn": "field_335",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 3679,
+          "status": "OK (src 3679, db 3679)"
+        },
+        {
+          "sourceKeyAliases": [
+            "340"
+          ],
+          "sourceKeyMatched": "340",
+          "sourceNonNullCountAcrossYears": 2588,
+          "sourceSample": "0",
+          "targetColumn": "field_340",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 2588,
+          "status": "OK (src 2588, db 2588)"
+        },
+        {
+          "sourceKeyAliases": [
+            "345"
+          ],
+          "sourceKeyMatched": "345",
+          "sourceNonNullCountAcrossYears": 2587,
+          "sourceSample": "10",
+          "targetColumn": "field_345",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 2587,
+          "status": "OK (src 2587, db 2587)"
+        },
+        {
+          "sourceKeyAliases": [
+            "370"
+          ],
+          "sourceKeyMatched": "370",
+          "sourceNonNullCountAcrossYears": 170686,
+          "sourceSample": "1",
+          "targetColumn": "field_370",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 170686,
+          "status": "OK (src 170686, db 170686)"
+        },
+        {
+          "sourceKeyAliases": [
+            "380"
+          ],
+          "sourceKeyMatched": "380",
+          "sourceNonNullCountAcrossYears": 164579,
+          "sourceSample": "14104",
+          "targetColumn": "field_380",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 164579,
+          "status": "OK (src 164579, db 164579)"
+        },
+        {
+          "sourceKeyAliases": [
+            "390"
+          ],
+          "sourceKeyMatched": "390",
+          "sourceNonNullCountAcrossYears": 212755,
+          "sourceSample": "14104",
+          "targetColumn": "field_390",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 212755,
+          "status": "OK (src 212755, db 212755)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "gifts_in_kind": {
+      "id": 14,
+      "name": "Non-cash Gifts (Gifts in Kind)",
+      "t3010Section": "Schedule 5 - Non-cash Gifts",
+      "description": "Non-cash gifts received by charities",
+      "sourceUuidsByYear": {
+        "2020": "9ccdc8a0-adb3-4a1e-8f7d-7c0acfce6fdd",
+        "2021": "77d7ffda-dfa5-4e4d-874d-7f8fc3730f11",
+        "2022": "1d9d40d2-3cb5-4ea1-ba30-1b74206e8e52",
+        "2023": "9517a12c-51b8-46eb-94a6-75a2332ed997",
+        "2024": "dec91969-9c33-452d-94f1-35b6d429f244"
+      },
+      "databaseTable": "cra_gifts_in_kind",
+      "primaryKey": [
+        "bn",
+        "fpe"
+      ],
+      "totalRowsInDb": 54575,
+      "totalRowsInCachedSource": 54575,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 54575,
+          "sourceSample": "118900802RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 54575,
+          "status": "OK (src 54575, db 54575)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 54575,
+          "sourceSample": "2020-03-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 54575,
+          "status": "OK (src 54575, db 54575)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 43509,
+          "sourceSample": "24",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 54575,
+          "status": "OK (src 43509, db 54575)"
+        },
+        {
+          "sourceKeyAliases": [
+            "500"
+          ],
+          "sourceKeyMatched": "500",
+          "sourceNonNullCountAcrossYears": 7457,
+          "sourceSample": "Y",
+          "targetColumn": "field_500",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 7457,
+          "status": "OK (src 7457, db 7457)"
+        },
+        {
+          "sourceKeyAliases": [
+            "505"
+          ],
+          "sourceKeyMatched": "505",
+          "sourceNonNullCountAcrossYears": 4498,
+          "sourceSample": "Y",
+          "targetColumn": "field_505",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 4498,
+          "status": "OK (src 4498, db 4498)"
+        },
+        {
+          "sourceKeyAliases": [
+            "510"
+          ],
+          "sourceKeyMatched": "510",
+          "sourceNonNullCountAcrossYears": 16252,
+          "sourceSample": "Y",
+          "targetColumn": "field_510",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 16252,
+          "status": "OK (src 16252, db 16252)"
+        },
+        {
+          "sourceKeyAliases": [
+            "515"
+          ],
+          "sourceKeyMatched": "515",
+          "sourceNonNullCountAcrossYears": 1490,
+          "sourceSample": "Y",
+          "targetColumn": "field_515",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 1490,
+          "status": "OK (src 1490, db 1490)"
+        },
+        {
+          "sourceKeyAliases": [
+            "520"
+          ],
+          "sourceKeyMatched": "520",
+          "sourceNonNullCountAcrossYears": 785,
+          "sourceSample": "Y",
+          "targetColumn": "field_520",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 785,
+          "status": "OK (src 785, db 785)"
+        },
+        {
+          "sourceKeyAliases": [
+            "525"
+          ],
+          "sourceKeyMatched": "525",
+          "sourceNonNullCountAcrossYears": 241,
+          "sourceSample": "Y",
+          "targetColumn": "field_525",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 241,
+          "status": "OK (src 241, db 241)"
+        },
+        {
+          "sourceKeyAliases": [
+            "530"
+          ],
+          "sourceKeyMatched": "530",
+          "sourceNonNullCountAcrossYears": 2648,
+          "sourceSample": "Y",
+          "targetColumn": "field_530",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 2648,
+          "status": "OK (src 2648, db 2648)"
+        },
+        {
+          "sourceKeyAliases": [
+            "535"
+          ],
+          "sourceKeyMatched": "535",
+          "sourceNonNullCountAcrossYears": 2720,
+          "sourceSample": "Y",
+          "targetColumn": "field_535",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 2720,
+          "status": "OK (src 2720, db 2720)"
+        },
+        {
+          "sourceKeyAliases": [
+            "540"
+          ],
+          "sourceKeyMatched": "540",
+          "sourceNonNullCountAcrossYears": 796,
+          "sourceSample": "Y",
+          "targetColumn": "field_540",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 796,
+          "status": "OK (src 796, db 796)"
+        },
+        {
+          "sourceKeyAliases": [
+            "545"
+          ],
+          "sourceKeyMatched": "545",
+          "sourceNonNullCountAcrossYears": 6993,
+          "sourceSample": "Y",
+          "targetColumn": "field_545",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 6993,
+          "status": "OK (src 6993, db 6993)"
+        },
+        {
+          "sourceKeyAliases": [
+            "550"
+          ],
+          "sourceKeyMatched": "550",
+          "sourceNonNullCountAcrossYears": 11814,
+          "sourceSample": "Y",
+          "targetColumn": "field_550",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 11814,
+          "status": "OK (src 11814, db 11814)"
+        },
+        {
+          "sourceKeyAliases": [
+            "555"
+          ],
+          "sourceKeyMatched": "555",
+          "sourceNonNullCountAcrossYears": 3995,
+          "sourceSample": "Y",
+          "targetColumn": "field_555",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 3995,
+          "status": "OK (src 3995, db 3995)"
+        },
+        {
+          "sourceKeyAliases": [
+            "560"
+          ],
+          "sourceKeyMatched": "560",
+          "sourceNonNullCountAcrossYears": 27524,
+          "sourceSample": "Y",
+          "targetColumn": "field_560",
+          "targetDataType": "boolean",
+          "transform": "yesNoToBool",
+          "defect": null,
+          "dbNonNullCount": 27524,
+          "status": "OK (src 27524, db 27524)"
+        },
+        {
+          "sourceKeyAliases": [
+            "565"
+          ],
+          "sourceKeyMatched": "565",
+          "sourceNonNullCountAcrossYears": 26774,
+          "sourceSample": "various items for silent auctions",
+          "targetColumn": "field_565",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 26774,
+          "status": "OK (src 26774, db 26774)"
+        },
+        {
+          "sourceKeyAliases": [
+            "580"
+          ],
+          "sourceKeyMatched": "580",
+          "sourceNonNullCountAcrossYears": 53429,
+          "sourceSample": "7022",
+          "targetColumn": "field_580",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 53429,
+          "status": "OK (src 53429, db 53429)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "political_activity_description": {
+      "id": 15,
+      "name": "Political Activities - Description",
+      "t3010Section": "Schedule 7 - Description",
+      "description": "Description of political/public policy activities",
+      "sourceUuidsByYear": {
+        "2020": "cc21c5ec-6ccb-4015-ad77-ae98ab653708",
+        "2021": "5f93c990-e481-4841-8097-41f3393301c7",
+        "2022": "bdd44a8c-6c54-4ab2-9059-ca30c5ad6e20",
+        "2023": "03635bf0-2bb7-4b3e-a0ca-e56010c08712",
+        "2024": "1e4f5e21-5de8-4fd0-bada-a8c93f2b893d"
+      },
+      "databaseTable": "cra_political_activity_desc",
+      "primaryKey": [
+        "bn",
+        "fpe"
+      ],
+      "totalRowsInDb": 313,
+      "totalRowsInCachedSource": 313,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 313,
+          "sourceSample": "137345070RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 313,
+          "status": "OK (src 313, db 313)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 313,
+          "sourceSample": "2020-03-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 313,
+          "status": "OK (src 313, db 313)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 313,
+          "sourceSample": "24",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 313,
+          "status": "OK (src 313, db 313)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Description"
+          ],
+          "sourceKeyMatched": "Description",
+          "sourceNonNullCountAcrossYears": 313,
+          "sourceSample": "Through a consultative approach and support of the RCA Commi",
+          "targetColumn": "description",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 313,
+          "status": "OK (src 313, db 313)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "political_activity_funding": {
+      "id": 16,
+      "name": "Political Activities - Funding",
+      "t3010Section": "Schedule 7 - Funding",
+      "description": "Political activity funding from outside Canada",
+      "sourceUuidsByYear": {
+        "2020": "6c0b52ee-4726-48ee-b457-a5e505bfb2fb",
+        "2021": "cc3154e8-c7b3-4be7-b7af-c2b2b62d481e",
+        "2022": "ff9e83a8-0f4e-495c-a6d0-76f398a0a7d3",
+        "2023": "408a6861-26d0-4f75-bd99-27f9a40ccc52",
+        "2024": "2160ad68-860e-4924-af63-a4eb70afa1f0"
+      },
+      "databaseTable": "cra_political_activity_funding",
+      "primaryKey": [
+        "bn",
+        "fpe",
+        "sequence_number"
+      ],
+      "totalRowsInDb": 0,
+      "totalRowsInCachedSource": 0,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "#"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "sequence_number",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Activity"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "activity",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Amount"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "amount",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Country"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "country",
+          "targetDataType": "character",
+          "transform": "cleanCode2",
+          "defect": null,
+          "dbNonNullCount": 0,
+          "status": "OK (source key not observed in cached sample)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "political_activity_resources": {
+      "id": 17,
+      "name": "Political Activities - Resources",
+      "t3010Section": "Schedule 7 - Resources",
+      "description": "Resources used for political activities",
+      "sourceUuidsByYear": {
+        "2020": "ffa346b0-f452-42ee-abeb-31ab644edf6c",
+        "2021": "e1330d89-e981-43ee-a9e3-017170ad7816",
+        "2022": "8dee0c0e-0599-4eeb-8eb9-acd29ace7c06",
+        "2023": "3464b8f9-8b2d-4c8c-a7c6-af606312e12a",
+        "2024": "a56df1f9-beeb-46d8-8dcc-687f1d53b7bf"
+      },
+      "databaseTable": "cra_political_activity_resources",
+      "primaryKey": [
+        "bn",
+        "fpe",
+        "sequence_number"
+      ],
+      "totalRowsInDb": 234,
+      "totalRowsInCachedSource": 234,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 234,
+          "sourceSample": "119257152RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 234,
+          "status": "OK (src 234, db 234)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 234,
+          "sourceSample": "2020-03-20",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 234,
+          "status": "OK (src 234, db 234)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 234,
+          "sourceSample": "23",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 234,
+          "status": "OK (src 234, db 234)"
+        },
+        {
+          "sourceKeyAliases": [
+            "#"
+          ],
+          "sourceKeyMatched": "#",
+          "sourceNonNullCountAcrossYears": 234,
+          "sourceSample": "700",
+          "targetColumn": "sequence_number",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 234,
+          "status": "OK (src 234, db 234)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Staff"
+          ],
+          "sourceKeyMatched": "Staff",
+          "sourceNonNullCountAcrossYears": 61,
+          "sourceSample": "X",
+          "targetColumn": "staff",
+          "targetDataType": "boolean",
+          "transform": "xFlagToBool",
+          "defect": null,
+          "dbNonNullCount": 61,
+          "status": "OK (src 61, db 61)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Volunteers"
+          ],
+          "sourceKeyMatched": "Volunteers",
+          "sourceNonNullCountAcrossYears": 29,
+          "sourceSample": "X",
+          "targetColumn": "volunteers",
+          "targetDataType": "boolean",
+          "transform": "xFlagToBool",
+          "defect": null,
+          "dbNonNullCount": 29,
+          "status": "OK (src 29, db 29)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Financial"
+          ],
+          "sourceKeyMatched": "Financial",
+          "sourceNonNullCountAcrossYears": 9,
+          "sourceSample": "X",
+          "targetColumn": "financial",
+          "targetDataType": "boolean",
+          "transform": "xFlagToBool",
+          "defect": null,
+          "dbNonNullCount": 9,
+          "status": "OK (src 9, db 9)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Property"
+          ],
+          "sourceKeyMatched": "Property",
+          "sourceNonNullCountAcrossYears": 7,
+          "sourceSample": "X",
+          "targetColumn": "property",
+          "targetDataType": "boolean",
+          "transform": "xFlagToBool",
+          "defect": null,
+          "dbNonNullCount": 7,
+          "status": "OK (src 7, db 7)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Other",
+            "Other Resource"
+          ],
+          "sourceKeyMatched": "Other",
+          "sourceNonNullCountAcrossYears": 1,
+          "sourceSample": "RENCONTRE AVEC LES ÉLUS",
+          "targetColumn": "other_resource",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 1,
+          "status": "OK (src 1, db 1)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "disbursement_quota": {
+      "id": 18,
+      "name": "Disbursement Quota",
+      "t3010Section": "Schedule 8 - Disbursement Quota",
+      "description": "Disbursement quota calculations (not available for all years)",
+      "sourceUuidsByYear": {
+        "2020": "371b101a-d8f1-4544-9554-2d76456d25e5",
+        "2023": "d98c8529-78a7-409b-b15f-296af52a43f1",
+        "2024": "d3c4db23-284f-49d7-9c86-6d8532f417bd"
+      },
+      "databaseTable": "cra_disbursement_quota",
+      "primaryKey": [
+        "bn",
+        "fpe"
+      ],
+      "totalRowsInDb": 22151,
+      "totalRowsInCachedSource": 22151,
+      "rowCountDelta": 0,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN"
+          ],
+          "sourceKeyMatched": "BN",
+          "sourceNonNullCountAcrossYears": 22151,
+          "sourceSample": "108024381RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 22151,
+          "status": "OK (src 22151, db 22151)"
+        },
+        {
+          "sourceKeyAliases": [
+            "FPE"
+          ],
+          "sourceKeyMatched": "FPE",
+          "sourceNonNullCountAcrossYears": 22151,
+          "sourceSample": "2023-12-31",
+          "targetColumn": "fpe",
+          "targetDataType": "date",
+          "transform": "parseDate",
+          "defect": null,
+          "dbNonNullCount": 22151,
+          "status": "OK (src 22151, db 22151)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Form ID",
+            "FormID"
+          ],
+          "sourceKeyMatched": "Form ID",
+          "sourceNonNullCountAcrossYears": 22151,
+          "sourceSample": "27",
+          "targetColumn": "form_id",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 22151,
+          "status": "OK (src 22151, db 22151)"
+        },
+        {
+          "sourceKeyAliases": [
+            "805"
+          ],
+          "sourceKeyMatched": "805",
+          "sourceNonNullCountAcrossYears": 19389,
+          "sourceSample": "491796",
+          "targetColumn": "field_805",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 19389,
+          "status": "OK (src 19389, db 19389)"
+        },
+        {
+          "sourceKeyAliases": [
+            "810"
+          ],
+          "sourceKeyMatched": "810",
+          "sourceNonNullCountAcrossYears": 1161,
+          "sourceSample": "0",
+          "targetColumn": "field_810",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 1161,
+          "status": "OK (src 1161, db 1161)"
+        },
+        {
+          "sourceKeyAliases": [
+            "815"
+          ],
+          "sourceKeyMatched": "815",
+          "sourceNonNullCountAcrossYears": 18564,
+          "sourceSample": "491796",
+          "targetColumn": "field_815",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 18564,
+          "status": "OK (src 18564, db 18564)"
+        },
+        {
+          "sourceKeyAliases": [
+            "820"
+          ],
+          "sourceKeyMatched": "820",
+          "sourceNonNullCountAcrossYears": 9809,
+          "sourceSample": "17213",
+          "targetColumn": "field_820",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 9809,
+          "status": "OK (src 9809, db 9809)"
+        },
+        {
+          "sourceKeyAliases": [
+            "825"
+          ],
+          "sourceKeyMatched": "825",
+          "sourceNonNullCountAcrossYears": 8845,
+          "sourceSample": "8566",
+          "targetColumn": "field_825",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 8845,
+          "status": "OK (src 8845, db 8845)"
+        },
+        {
+          "sourceKeyAliases": [
+            "830"
+          ],
+          "sourceKeyMatched": "830",
+          "sourceNonNullCountAcrossYears": 8812,
+          "sourceSample": "428",
+          "targetColumn": "field_830",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 8812,
+          "status": "OK (src 8812, db 8812)"
+        },
+        {
+          "sourceKeyAliases": [
+            "835"
+          ],
+          "sourceKeyMatched": "835",
+          "sourceNonNullCountAcrossYears": 8821,
+          "sourceSample": "35428",
+          "targetColumn": "field_835",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 8821,
+          "status": "OK (src 8821, db 8821)"
+        },
+        {
+          "sourceKeyAliases": [
+            "840"
+          ],
+          "sourceKeyMatched": "840",
+          "sourceNonNullCountAcrossYears": 18537,
+          "sourceSample": "17213",
+          "targetColumn": "field_840",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 18537,
+          "status": "OK (src 18537, db 18537)"
+        },
+        {
+          "sourceKeyAliases": [
+            "845"
+          ],
+          "sourceKeyMatched": "845",
+          "sourceNonNullCountAcrossYears": 14918,
+          "sourceSample": "233809",
+          "targetColumn": "field_845",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 14918,
+          "status": "OK (src 14918, db 14918)"
+        },
+        {
+          "sourceKeyAliases": [
+            "850"
+          ],
+          "sourceKeyMatched": "850",
+          "sourceNonNullCountAcrossYears": 1830,
+          "sourceSample": "0",
+          "targetColumn": "field_850",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 1830,
+          "status": "OK (src 1830, db 1830)"
+        },
+        {
+          "sourceKeyAliases": [
+            "855"
+          ],
+          "sourceKeyMatched": "855",
+          "sourceNonNullCountAcrossYears": 13026,
+          "sourceSample": "24191",
+          "targetColumn": "field_855",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 13026,
+          "status": "OK (src 13026, db 13026)"
+        },
+        {
+          "sourceKeyAliases": [
+            "860"
+          ],
+          "sourceKeyMatched": "860",
+          "sourceNonNullCountAcrossYears": 20584,
+          "sourceSample": "258000",
+          "targetColumn": "field_860",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 20584,
+          "status": "OK (src 20584, db 20584)"
+        },
+        {
+          "sourceKeyAliases": [
+            "865"
+          ],
+          "sourceKeyMatched": "865",
+          "sourceNonNullCountAcrossYears": 20849,
+          "sourceSample": "240787",
+          "targetColumn": "field_865",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 20849,
+          "status": "OK (src 20849, db 20849)"
+        },
+        {
+          "sourceKeyAliases": [
+            "870"
+          ],
+          "sourceKeyMatched": "870",
+          "sourceNonNullCountAcrossYears": 19180,
+          "sourceSample": "521496",
+          "targetColumn": "field_870",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 19180,
+          "status": "OK (src 19180, db 19180)"
+        },
+        {
+          "sourceKeyAliases": [
+            "875"
+          ],
+          "sourceKeyMatched": "875",
+          "sourceNonNullCountAcrossYears": 9824,
+          "sourceSample": "18252",
+          "targetColumn": "field_875",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 9824,
+          "status": "OK (src 9824, db 9824)"
+        },
+        {
+          "sourceKeyAliases": [
+            "880"
+          ],
+          "sourceKeyMatched": "880",
+          "sourceNonNullCountAcrossYears": 9367,
+          "sourceSample": "458730",
+          "targetColumn": "field_880",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 9367,
+          "status": "OK (src 9367, db 9367)"
+        },
+        {
+          "sourceKeyAliases": [
+            "885"
+          ],
+          "sourceKeyMatched": "885",
+          "sourceNonNullCountAcrossYears": 9340,
+          "sourceSample": "22937",
+          "targetColumn": "field_885",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 9340,
+          "status": "OK (src 9340, db 9340)"
+        },
+        {
+          "sourceKeyAliases": [
+            "890"
+          ],
+          "sourceKeyMatched": "890",
+          "sourceNonNullCountAcrossYears": 9350,
+          "sourceSample": "57937",
+          "targetColumn": "field_890",
+          "targetDataType": "numeric",
+          "transform": "parseDecimal",
+          "defect": null,
+          "dbNonNullCount": 9350,
+          "status": "OK (src 9350, db 9350)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    },
+    "web_urls": {
+      "id": 19,
+      "name": "Charity Contact Web Addresses",
+      "t3010Section": "Contact Information",
+      "description": "Website and contact URLs for charities",
+      "sourceUuidsByYear": {
+        "2020": "821606b5-2c4b-4293-bf5b-26924408443f",
+        "2021": "3887ba10-9059-4e33-9a7e-a53acb6731e2",
+        "2022": "26a5ca19-77ed-4fad-a522-a3bf37c7956b",
+        "2023": "204222a0-eefc-4ccc-8c29-b6ecea0f6eb5",
+        "2024": "e3567bb5-5d98-44d0-b0e8-9cdd3732c9e4"
+      },
+      "databaseTable": "cra_web_urls",
+      "primaryKey": [
+        "bn",
+        "fiscal_year",
+        "sequence_number"
+      ],
+      "totalRowsInDb": 169123,
+      "totalRowsInCachedSource": 169473,
+      "rowCountDelta": 350,
+      "columnCrosswalk": [
+        {
+          "sourceKeyAliases": [
+            "BN",
+            "BN/NE"
+          ],
+          "sourceKeyMatched": "BN/NE",
+          "sourceNonNullCountAcrossYears": 169473,
+          "sourceSample": "872866694RR0001",
+          "targetColumn": "bn",
+          "targetDataType": "character varying",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 169123,
+          "status": "OK (src 169473, db 169123)"
+        },
+        {
+          "sourceKeyAliases": [
+            "__SYNTHESIZED__"
+          ],
+          "sourceKeyMatched": null,
+          "sourceNonNullCountAcrossYears": 0,
+          "sourceSample": null,
+          "targetColumn": "fiscal_year",
+          "targetDataType": "integer",
+          "transform": "year from run argument",
+          "defect": null,
+          "dbNonNullCount": 169123,
+          "status": "OK (synthesized at import time, not a source column)"
+        },
+        {
+          "sourceKeyAliases": [
+            "#"
+          ],
+          "sourceKeyMatched": "#",
+          "sourceNonNullCountAcrossYears": 169473,
+          "sourceSample": "000000001",
+          "targetColumn": "sequence_number",
+          "targetDataType": "integer",
+          "transform": "parseInteger",
+          "defect": null,
+          "dbNonNullCount": 169123,
+          "status": "OK (src 169473, db 169123)"
+        },
+        {
+          "sourceKeyAliases": [
+            "Contact URL"
+          ],
+          "sourceKeyMatched": "Contact URL",
+          "sourceNonNullCountAcrossYears": 169473,
+          "sourceSample": "BARRIEHISTORICAL.COM",
+          "targetColumn": "contact_url",
+          "targetDataType": "text",
+          "transform": "cleanString",
+          "defect": null,
+          "dbNonNullCount": 169123,
+          "status": "OK (src 169473, db 169123)"
+        }
+      ],
+      "unmappedSourceKeys": [],
+      "unmappedDbColumns": [],
+      "knownDefects": []
+    }
+  }
+}

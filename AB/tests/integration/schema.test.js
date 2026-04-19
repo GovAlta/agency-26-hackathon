@@ -69,8 +69,8 @@ describe('AB Schema - Integration Tests', () => {
     const requiredColumns = [
       'id', 'mongo_id', 'ministry', 'business_unit_name', 'recipient',
       'program', 'amount', 'lottery', 'payment_date', 'fiscal_year',
-      'display_fiscal_year', 'lottery_fund', 'data_quality',
-      'data_quality_issues', 'version', 'created_at', 'updated_at',
+      'display_fiscal_year', 'lottery_fund',
+      'version', 'created_at', 'updated_at',
     ];
 
     for (const col of requiredColumns) {

@@ -18,6 +18,7 @@ data/downloads/
 .local-db/data/
 .local-db/node_modules/
 .local-db/.env
+.local-db/schemas/*.sql
 
 # Splink pipeline intermediate artifacts — regenerated each run by
 # splink/export_source_data.py (~60 MB of parquet files + DuckDB scratch).

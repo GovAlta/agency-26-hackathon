@@ -95,8 +95,16 @@ async function migrate(client) {
       loops_6hop         int DEFAULT 0,
       loops_7plus        int DEFAULT 0,
       max_bottleneck     numeric DEFAULT 0,
-      total_circular_amt numeric DEFAULT 0
+      total_circular_amt numeric DEFAULT 0,
+      -- Filled in by 02-score-universe.js. Declared here so the column
+      -- exists on a fresh install (CREATE TABLE IF NOT EXISTS). On
+      -- pre-existing DBs that were created before these fields were
+      -- added, the ALTER TABLE below backfills them idempotently.
+      score              int,
+      scored_at          timestamptz
     );
+    ALTER TABLE cra.loop_universe ADD COLUMN IF NOT EXISTS score     int;
+    ALTER TABLE cra.loop_universe ADD COLUMN IF NOT EXISTS scored_at timestamptz;
   `);
 
   await client.query(`
@@ -337,7 +345,10 @@ async function main() {
   const client = await db.getClient();
 
   try {
-    if (args.migrate) await migrate(client);
+    // migrate() is idempotent (CREATE TABLE / INDEX IF NOT EXISTS) so we
+    // always run it. This makes the script self-bootstrapping for fresh
+    // DBs or after a drop-loop-tables wipe — no --migrate flag required.
+    await migrate(client);
 
     // Phase 1
     const edgeCount = await buildAndPruneEdges(client);

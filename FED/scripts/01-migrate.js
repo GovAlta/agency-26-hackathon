@@ -114,7 +114,14 @@ async function migrate() {
         additional_information_fr TEXT,
         naics_identifier TEXT,
         owner_org TEXT,
-        owner_org_title TEXT
+        owner_org_title TEXT,
+        -- is_amendment is populated by 06-fix-quality.js (flags amendment rows
+        -- by amendment_number). Declared here so the analytical views
+        -- vw_grants_by_department / vw_grants_by_province created below can
+        -- reference it on a fresh install. 06-fix-quality.js still runs an
+        -- idempotent ALTER TABLE ADD COLUMN that no-ops when the column
+        -- already exists.
+        is_amendment BOOLEAN DEFAULT false
       );
     `);
     log.info('Created fed.grants_contributions');
@@ -236,8 +243,107 @@ async function migrate() {
     `);
     log.info('Created fed.vw_grants_by_province view');
 
+    // Current commitment per agreement.
+    //
+    // Per TBS Proactive Publication spec, agreement_value is "the total grant
+    // or contribution value, and not the change in agreement value" — each
+    // row is a cumulative snapshot. The per-row value on the highest
+    // amendment_number for a given agreement is therefore the current
+    // commitment.
+    //
+    // Partition key: (ref_number, COALESCE(bn, legal_name, _id)). ref_number
+    // is spec'd unique-per-entry but publisher defects exist (≈41K ref_numbers
+    // appear under >1 recipient; ≈26K (ref_number, amendment_number) pairs
+    // duplicate — see DATA_DICTIONARY.md "Known source defects"). We fall back
+    // from bn (often NULL — 31.5K ref_numbers have ≥2 rows all with NULL bn)
+    // to legal_name, and finally to _id, so colliding distinct agreements stay
+    // separated instead of silently collapsing.
+    //
+    // Trade-off: when a single agreement's recipient_legal_name changes across
+    // amendments (e.g. bilingual renaming), this view can produce two rows
+    // instead of one. Prefer accuracy on collisions over merging legitimate
+    // amendments with name drift.
+    //
+    // amendment_number is stored as TEXT but is numeric-only in practice;
+    // strip non-digits and cast to INT so "10" sorts after "2".
+    await client.query(`
+      CREATE OR REPLACE VIEW fed.vw_agreement_current AS
+      SELECT DISTINCT ON (
+               gc.ref_number,
+               COALESCE(gc.recipient_business_number, gc.recipient_legal_name, gc._id::text)
+             )
+        gc._id,
+        gc.ref_number,
+        gc.amendment_number,
+        gc.amendment_date,
+        gc.agreement_type,
+        gc.agreement_number,
+        gc.recipient_type,
+        gc.recipient_business_number,
+        gc.recipient_legal_name,
+        gc.recipient_operating_name,
+        gc.recipient_country,
+        gc.recipient_province,
+        gc.recipient_city,
+        gc.prog_name_en,
+        gc.agreement_title_en,
+        gc.agreement_value,
+        gc.foreign_currency_type,
+        gc.foreign_currency_value,
+        gc.agreement_start_date,
+        gc.agreement_end_date,
+        gc.owner_org,
+        gc.owner_org_title,
+        gc.is_amendment
+      FROM fed.grants_contributions gc
+      WHERE gc.ref_number IS NOT NULL
+      ORDER BY
+        gc.ref_number,
+        COALESCE(gc.recipient_business_number, gc.recipient_legal_name, gc._id::text),
+        NULLIF(regexp_replace(gc.amendment_number, '\\D', '', 'g'), '')::int DESC NULLS LAST,
+        gc.amendment_date DESC NULLS LAST,
+        gc._id DESC;
+    `);
+    log.info('Created fed.vw_agreement_current view');
+
+    // Original commitment only — rows with amendment_number = 0.
+    //
+    // Use this when the question is "what did the department initially
+    // commit to?". For "what is the current total commitment?", use
+    // vw_agreement_current above. For "every snapshot ever published,
+    // including amendments" (rarely the right default), query the base
+    // table directly.
+    await client.query(`
+      CREATE OR REPLACE VIEW fed.vw_agreement_originals AS
+      SELECT
+        gc._id,
+        gc.ref_number,
+        gc.amendment_number,
+        gc.agreement_type,
+        gc.agreement_number,
+        gc.recipient_type,
+        gc.recipient_business_number,
+        gc.recipient_legal_name,
+        gc.recipient_operating_name,
+        gc.recipient_country,
+        gc.recipient_province,
+        gc.recipient_city,
+        gc.prog_name_en,
+        gc.agreement_title_en,
+        gc.agreement_value,
+        gc.foreign_currency_type,
+        gc.foreign_currency_value,
+        gc.agreement_start_date,
+        gc.agreement_end_date,
+        gc.owner_org,
+        gc.owner_org_title
+      FROM fed.grants_contributions gc
+      WHERE gc.is_amendment = false;
+    `);
+    log.info('Created fed.vw_agreement_originals view');
+
     log.section('Migration Complete');
-    log.info('5 lookup tables + 1 data table + 3 views + 12 indexes created successfully');
+    log.info('5 lookup tables + 1 data table + 5 views + 12 indexes created successfully');
 
   } catch (err) {
     log.error(`Migration failed: ${err.message}`);

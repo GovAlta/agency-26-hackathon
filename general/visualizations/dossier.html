@@ -495,13 +495,14 @@
           <h2>Non-qualified donees (gifts outside Canada's registered-charity system)</h2>
           <table>
             <thead><tr><th>Year</th><th>Recipient</th><th>Purpose</th>
-              <th class="num">Cash</th><th class="num">Non-cash</th></tr></thead>
+              <th class="num">Cash</th><th class="num">Non-cash</th><th>Country</th></tr></thead>
             <tbody>
               <tr v-for="(n, i) in international.non_qualified_donees" :key="i">
                 <td>{{ n.yr }}</td><td>{{ n.recipient_name }}</td>
                 <td class="mini">{{ (n.purpose || '').slice(0, 80) }}</td>
                 <td class="num">${{ fmtMoney(n.cash_amount) }}</td>
                 <td class="num">${{ fmtMoney(n.non_cash_amount) }}</td>
+                <td class="mini">{{ n.country || '—' }}</td>
               </tr>
             </tbody>
           </table>
@@ -568,6 +569,193 @@
           <h3 v-if="y.programs?.length">Programs</h3>
           <div v-if="y.programs?.length" v-for="(p, i) in y.programs" :key="i" style="padding:4px 0; font-size:13px">
             <b>{{ p.program_type }}:</b> {{ p.description }}
+          </div>
+
+          <!-- Program area classification (field_1510 / Program Areas) -->
+          <h3 v-if="y.program_areas && (y.program_areas.program_area_1 || y.program_areas.program_area_2 || y.program_areas.program_area_3)">Program area classification</h3>
+          <div v-if="y.program_areas && (y.program_areas.program_area_1 || y.program_areas.program_area_2 || y.program_areas.program_area_3)" class="kv">
+            <template v-for="n in [1,2,3]" :key="n">
+              <template v-if="y.program_areas['program_area_'+n]">
+                <div class="k">Area #{{ n }}</div>
+                <div class="v">
+                  code {{ y.program_areas['program_area_'+n] }}
+                  <span v-if="y.program_areas['program_percentage_'+n] != null">— {{ y.program_areas['program_percentage_'+n] }}%</span>
+                  <span v-if="y.program_areas['program_description_'+n]" class="mini"> · {{ y.program_areas['program_description_'+n] }}</span>
+                </div>
+              </template>
+            </template>
+          </div>
+
+          <!-- "Other" revenue/expense free-text (field_4655, 4930) -->
+          <div v-if="y.financials && (y.financials.revenue_other_specify || y.financials.expense_other_specify)">
+            <h3>"Other" revenue / expenditure descriptions</h3>
+            <div class="kv">
+              <div v-if="y.financials.revenue_other_specify" class="k">Other revenue (line 4650) specify</div>
+              <div v-if="y.financials.revenue_other_specify" class="v">{{ y.financials.revenue_other_specify }}</div>
+              <div v-if="y.financials.expense_other_specify" class="k">Other expenditures (line 4920) specify</div>
+              <div v-if="y.financials.expense_other_specify" class="v">{{ y.financials.expense_other_specify }}</div>
+            </div>
+          </div>
+
+          <!-- Fundraising methods used (Section C, line C6) -->
+          <h3 v-if="y.program_areas && fundraisingMethodsUsed(y.program_areas).length">Fundraising methods used</h3>
+          <div v-if="y.program_areas && fundraisingMethodsUsed(y.program_areas).length" class="mini" style="line-height:1.8">
+            <span v-for="m in fundraisingMethodsUsed(y.program_areas)" :key="m" class="alias" style="font-family:inherit">{{ m }}</span>
+            <div v-if="y.program_areas.fr_other_specify" style="margin-top:6px"><b>Other (specify):</b> {{ y.program_areas.fr_other_specify }}</div>
+          </div>
+
+          <!-- External fundraisers (line C7) -->
+          <h3 v-if="y.program_areas?.paid_external_fundraisers != null || y.program_areas?.external_fr_gross_revenue != null">External fundraisers</h3>
+          <div v-if="y.program_areas?.paid_external_fundraisers != null || y.program_areas?.external_fr_gross_revenue != null" class="kv">
+            <div class="k">Paid external fundraisers?</div><div class="v">{{ yn(y.program_areas.paid_external_fundraisers) }}</div>
+            <template v-if="y.program_areas.paid_external_fundraisers === true">
+              <div class="k">Gross revenue collected (line 5450)</div><div class="v">${{ fmtMoney(y.program_areas.external_fr_gross_revenue) }}</div>
+              <div class="k">Amounts paid to / retained by fundraisers (line 5460)</div><div class="v">${{ fmtMoney(y.program_areas.external_fr_amounts_paid) }}</div>
+              <div class="k">Net to charity</div><div class="v">${{ fmtMoney((Number(y.program_areas.external_fr_gross_revenue || 0)) - (Number(y.program_areas.external_fr_amounts_paid || 0))) }}</div>
+              <div class="k">Payment structure</div>
+              <div class="v mini">
+                <span v-if="y.program_areas.ext_fr_commissions" class="alias" style="font-family:inherit">Commissions</span>
+                <span v-if="y.program_areas.ext_fr_bonuses" class="alias" style="font-family:inherit">Bonuses</span>
+                <span v-if="y.program_areas.ext_fr_finder_fees" class="alias" style="font-family:inherit">Finder's fees</span>
+                <span v-if="y.program_areas.ext_fr_set_fee" class="alias" style="font-family:inherit">Set fee</span>
+                <span v-if="y.program_areas.ext_fr_honoraria" class="alias" style="font-family:inherit">Honoraria</span>
+                <span v-if="y.program_areas.ext_fr_other" class="alias" style="font-family:inherit">Other</span>
+              </div>
+              <div v-if="y.program_areas.ext_fr_other_specify" class="k">Other specify</div>
+              <div v-if="y.program_areas.ext_fr_other_specify" class="v">{{ y.program_areas.ext_fr_other_specify }}</div>
+              <div class="k">Fundraiser issued tax receipts on behalf of charity?</div><div class="v">{{ yn(y.program_areas.ext_fr_issued_receipts) }}</div>
+            </template>
+          </div>
+
+          <!-- Foundation questions (Schedule 1) — only if data present -->
+          <h3 v-if="y.foundation">Foundation (Schedule 1)</h3>
+          <div v-if="y.foundation" class="kv">
+            <div class="k">Acquired control of a corporation?</div><div class="v">{{ yn(y.foundation.acquired_corp_control) }}</div>
+            <div class="k">Incurred non-operating debts?</div><div class="v">{{ yn(y.foundation.incurred_debts) }}</div>
+            <div class="k">Held non-qualifying investments?</div><div class="v">{{ yn(y.foundation.held_non_qualifying_investments) }}</div>
+            <div class="k">Owned &gt;2% of any class of corporate shares?</div><div class="v">{{ yn(y.foundation.owned_more_than_2pct_shares) }}</div>
+            <div v-if="y.foundation.restricted_funds_total != null" class="k">Restricted funds total (line 111, v27+)</div>
+            <div v-if="y.foundation.restricted_funds_total != null" class="v">${{ fmtMoney(y.foundation.restricted_funds_total) }}</div>
+            <div v-if="y.foundation.restricted_funds_not_permitted_to_spend != null" class="k">  — portion not permitted to spend (line 112)</div>
+            <div v-if="y.foundation.restricted_funds_not_permitted_to_spend != null" class="v">${{ fmtMoney(y.foundation.restricted_funds_not_permitted_to_spend) }}</div>
+          </div>
+
+          <!-- Gifts in Kind (Schedule 5) — only if data present -->
+          <h3 v-if="y.gifts_in_kind">Non-cash gifts received (Schedule 5)</h3>
+          <div v-if="y.gifts_in_kind" class="kv">
+            <div class="k">Total receipted non-cash gifts (line 580)</div>
+            <div class="v">${{ fmtMoney(y.gifts_in_kind.gik_total_receipted_amount) }}</div>
+            <div class="k">Gift categories received</div>
+            <div class="v mini">
+              <span v-if="y.gifts_in_kind.gik_artwork_wine_jewellery" class="alias" style="font-family:inherit">Artwork / wine / jewellery</span>
+              <span v-if="y.gifts_in_kind.gik_building_materials" class="alias" style="font-family:inherit">Building materials</span>
+              <span v-if="y.gifts_in_kind.gik_clothing_furniture_food" class="alias" style="font-family:inherit">Clothing / furniture / food</span>
+              <span v-if="y.gifts_in_kind.gik_vehicles" class="alias" style="font-family:inherit">Vehicles</span>
+              <span v-if="y.gifts_in_kind.gik_cultural_properties" class="alias" style="font-family:inherit">Cultural properties</span>
+              <span v-if="y.gifts_in_kind.gik_ecological_properties" class="alias" style="font-family:inherit">Ecological properties</span>
+              <span v-if="y.gifts_in_kind.gik_life_insurance" class="alias" style="font-family:inherit">Life insurance</span>
+              <span v-if="y.gifts_in_kind.gik_medical_equipment" class="alias" style="font-family:inherit">Medical equipment</span>
+              <span v-if="y.gifts_in_kind.gik_privately_held_securities" class="alias" style="font-family:inherit">Privately-held securities</span>
+              <span v-if="y.gifts_in_kind.gik_machinery_equipment" class="alias" style="font-family:inherit">Machinery / equipment</span>
+              <span v-if="y.gifts_in_kind.gik_publicly_traded_securities" class="alias" style="font-family:inherit">Publicly-traded securities</span>
+              <span v-if="y.gifts_in_kind.gik_books" class="alias" style="font-family:inherit">Books</span>
+              <span v-if="y.gifts_in_kind.gik_other" class="alias" style="font-family:inherit">Other</span>
+            </div>
+            <div v-if="y.gifts_in_kind.gik_other_specify" class="k">Other specify</div>
+            <div v-if="y.gifts_in_kind.gik_other_specify" class="v">{{ y.gifts_in_kind.gik_other_specify }}</div>
+          </div>
+
+          <!-- Grants to non-qualified donees summary (v26+) -->
+          <h3 v-if="y.program_areas?.made_grants_to_nq_donees != null">Grants to non-qualified donees (grantees)</h3>
+          <div v-if="y.program_areas?.made_grants_to_nq_donees != null" class="kv">
+            <div class="k">Made qualifying disbursements to grantees?</div>
+            <div class="v">{{ yn(y.program_areas.made_grants_to_nq_donees) }}</div>
+            <template v-if="y.program_areas.made_grants_to_nq_donees === true">
+              <div class="k">Any grantee received &gt;$5,000?</div>
+              <div class="v">{{ yn(y.program_areas.grants_over_5k) }}</div>
+              <div v-if="y.program_areas.grantees_under_5k_count != null" class="k">Number of grantees ≤$5,000</div>
+              <div v-if="y.program_areas.grantees_under_5k_count != null" class="v">{{ y.program_areas.grantees_under_5k_count }}</div>
+              <div v-if="y.program_areas.grantees_under_5k_amount != null" class="k">  — total amount</div>
+              <div v-if="y.program_areas.grantees_under_5k_amount != null" class="v">${{ fmtMoney(y.program_areas.grantees_under_5k_amount) }}</div>
+              <div class="mini">See <b>International</b> tab for the per-recipient grantee list.</div>
+            </template>
+          </div>
+
+          <!-- Donor Advised Funds (v27+) -->
+          <h3 v-if="y.program_areas?.held_daf != null">Donor Advised Funds (DAF, v27+)</h3>
+          <div v-if="y.program_areas?.held_daf != null" class="kv">
+            <div class="k">Held any DAF during fiscal period?</div>
+            <div class="v">{{ yn(y.program_areas.held_daf) }}</div>
+            <template v-if="y.program_areas.held_daf === true">
+              <div class="k">Account count (end of period)</div><div class="v">{{ y.program_areas.daf_account_count ?? '—' }}</div>
+              <div class="k">Total account value</div><div class="v">${{ fmtMoney(y.program_areas.daf_total_value) }}</div>
+              <div class="k">Donations received to DAFs</div><div class="v">${{ fmtMoney(y.program_areas.daf_donations_received) }}</div>
+              <div class="k">Qualifying disbursements from DAFs</div><div class="v">${{ fmtMoney(y.program_areas.daf_qualifying_disbursements) }}</div>
+            </template>
+          </div>
+
+          <!-- Disbursement quota (Schedule 8, v27+) -->
+          <h3 v-if="y.disbursement_quota">Disbursement quota (Schedule 8)</h3>
+          <div v-if="y.disbursement_quota" class="kv">
+            <div class="k">Average property not used for programs (line 805 ← 5900)</div>
+            <div class="v">${{ fmtMoney(y.disbursement_quota.dq_avg_property_value) }}</div>
+            <div class="k">DQ requirement this period (line 840)</div>
+            <div class="v">${{ fmtMoney(y.disbursement_quota.dq_req_current) }}</div>
+            <div class="k">Total disbursed (line 860 = 845+850+855)</div>
+            <div class="v">${{ fmtMoney(y.disbursement_quota.dq_total_disbursed) }}</div>
+            <div class="k">Excess / shortfall (line 865 = 860 − 840)</div>
+            <div class="v" :style="{color: Number(y.disbursement_quota.dq_excess_or_shortfall) < 0 ? '#c00':'inherit'}">${{ fmtMoney(y.disbursement_quota.dq_excess_or_shortfall) }}</div>
+            <div class="k">Estimated DQ requirement next period (line 890)</div>
+            <div class="v">${{ fmtMoney(y.disbursement_quota.dq_next_total || y.disbursement_quota.dq_next_under_1m) }}</div>
+          </div>
+
+          <!-- Other Section C flags (misc Y/N) -->
+          <h3 v-if="y.program_areas && hasAnyFlag(y.program_areas, [
+              'compensated_directors','has_employees','foreign_donations_10k',
+              'received_noncash_gifts','acquired_non_qualifying_security',
+              'donor_used_property','issued_receipts_for_other','partnership_holdings',
+              'borrowed_non_arms_length','large_unused_property'])">Other flags</h3>
+          <div v-if="y.program_areas" class="kv" style="font-size:13px">
+            <template v-if="y.program_areas.compensated_directors != null">
+              <div class="k">Compensated directors / non-arm's-length persons</div>
+              <div class="v">{{ yn(y.program_areas.compensated_directors) }}</div>
+            </template>
+            <template v-if="y.program_areas.has_employees != null">
+              <div class="k">Had employees</div>
+              <div class="v">{{ yn(y.program_areas.has_employees) }}</div>
+            </template>
+            <template v-if="y.program_areas.foreign_donations_10k != null">
+              <div class="k">Received gifts ≥$10k from non-resident donor</div>
+              <div class="v">{{ yn(y.program_areas.foreign_donations_10k) }}</div>
+            </template>
+            <template v-if="y.program_areas.received_noncash_gifts != null">
+              <div class="k">Received non-cash gifts with receipts</div>
+              <div class="v">{{ yn(y.program_areas.received_noncash_gifts) }}</div>
+            </template>
+            <template v-if="y.financials?.borrowed_non_arms_length != null">
+              <div class="k">Borrowed from / loaned to non-arm's-length parties</div>
+              <div class="v">{{ yn(y.financials.borrowed_non_arms_length) }}</div>
+            </template>
+            <template v-if="y.program_areas.acquired_non_qualifying_security != null">
+              <div class="k">Acquired non-qualifying security</div>
+              <div class="v">{{ yn(y.program_areas.acquired_non_qualifying_security) }}</div>
+            </template>
+            <template v-if="y.program_areas.donor_used_property != null">
+              <div class="k">Allowed donor to use charity's property</div>
+              <div class="v">{{ yn(y.program_areas.donor_used_property) }}</div>
+            </template>
+            <template v-if="y.program_areas.issued_receipts_for_other != null">
+              <div class="k">Issued tax receipts on behalf of another organization</div>
+              <div class="v">{{ yn(y.program_areas.issued_receipts_for_other) }}</div>
+            </template>
+            <template v-if="y.program_areas.partnership_holdings != null">
+              <div class="k">Direct partnership holdings</div>
+              <div class="v">{{ yn(y.program_areas.partnership_holdings) }}</div>
+            </template>
+            <template v-if="y.program_areas.large_unused_property != null">
+              <div class="k">Avg value of unused property exceeded threshold (v27)</div>
+              <div class="v">{{ yn(y.program_areas.large_unused_property) }}</div>
+            </template>
           </div>
         </div>
       </template>
@@ -796,6 +984,37 @@ createApp({
     }
     function designation(d) {
       return ({ A: 'A (Public Foundation)', B: 'B (Private Foundation)', C: 'C (Charitable Organization)' })[d] || d || '—';
+    }
+    function yn(v) {
+      if (v === true) return 'Yes';
+      if (v === false) return 'No';
+      return '—';
+    }
+    // Maps every Section-C fundraising-method boolean to its human label.
+    // Returns the list of methods actually marked Y for a given year row.
+    const FR_METHOD_LABELS = {
+      fr_advertisements: 'Advertisements / print / radio / TV',
+      fr_auctions: 'Auctions',
+      fr_collection_plate: 'Collection plate / boxes',
+      fr_door_to_door: 'Door-to-door solicitation',
+      fr_draws_lotteries: 'Draws / lotteries',
+      fr_dinners_galas: 'Dinners / galas / concerts',
+      fr_fundraising_sales: 'Fundraising sales (e.g. cookies)',
+      fr_internet: 'Internet',
+      fr_mail_campaigns: 'Mail campaigns',
+      fr_planned_giving: 'Planned-giving programs',
+      fr_corporate_sponsors: 'Targeted corporate donations / sponsorships',
+      fr_targeted_contacts: 'Targeted contacts',
+      fr_telephone_tv: 'Telephone / TV solicitations',
+      fr_tournaments: 'Tournaments / sporting events',
+      fr_cause_related: 'Cause-related marketing',
+      fr_other: 'Other',
+    };
+    function fundraisingMethodsUsed(pa) {
+      return Object.entries(FR_METHOD_LABELS).filter(([k]) => pa[k] === true).map(([, v]) => v);
+    }
+    function hasAnyFlag(obj, keys) {
+      return keys.some(k => obj[k] != null);
     }
 
     async function doSearch() {
@@ -1382,7 +1601,7 @@ createApp({
       toggleTheme, doSearch, loadEntity, toggleMerge,
       toggleSelect, openSingleFromSelection, mergeSelection,
       downloadFullDossier, copyFullDossier, previewJson,
-      fmt, fmtMoney, designation,
+      fmt, fmtMoney, designation, yn, fundraisingMethodsUsed, hasAnyFlag,
       totalLinks, totalAliases, grandTotal, allAliases, fundingTotals,
     };
   }
