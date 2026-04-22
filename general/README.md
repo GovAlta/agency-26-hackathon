@@ -41,7 +41,7 @@ Any approach that relies on just one source of truth is inherently partial. The 
 
 ## The pipeline
 
-The pipeline is six discrete stages. Each writes to its own Postgres table(s) and is independently idempotent — any stage can be re-run without corrupting earlier work. Together they transform ~1.1 million source records into ~800,000 canonical entities.
+The pipeline is six discrete stages. Each writes to its own Postgres table(s) and is independently idempotent — any stage can be re-run without corrupting earlier work. Together they transform ~1.1 million source records into ~851,000 canonical entities.
 
 ### Stage 1 — Schema migration (`03-migrate-entities.js`)
 
@@ -55,13 +55,13 @@ Creates the entity-resolution tables, indexes, and helper SQL functions in the `
 
 Walks the six source tables in a carefully-chosen order, and for each record either (a) links it to an existing entity or (b) creates a new one. Ordered so the highest-trust data seeds entities first.
 
-**Phase 1 — CRA identification seed.** Reads ~87,000 registered Canadian charities from `cra.cra_identification`. Each unique BN becomes an entity, with the CRA legal name as the canonical name. This forms the authoritative backbone: BN is the primary identifier throughout the pipeline.
+**Phase 1 — CRA identification seed.** Reads ~91,000 registered Canadian charities from `cra.cra_identification`. Each unique BN becomes an entity, with the CRA legal name as the canonical name. This forms the authoritative backbone: BN is the primary identifier throughout the pipeline.
 
 **Phase 1b — CRA qualified donees.** Reads ~1.66 million rows from `cra.cra_qualified_donees` (gifts declared by one charity to another on its T3010). Matches by the recipient's BN where present — this attaches *thousands of additional name variants* to existing Phase 1 entities, because each donor wrote the recipient's name in its own way. For recipients whose BN is unknown or whose registration has been revoked, a new entity is created.
 
-**Phase 2 — Federal grants.** Reads ~389,000 distinct recipient names from `fed.grants_contributions`. BN-anchors to Phase 1 entities where possible. Creates new BN-only entities for federal recipients not registered with CRA (government departments, universities, foreign organizations). For records with no usable BN, falls back to a name-matching cascade: exact match, then normalized match, then the TRADE-NAME and bilingual-pipe extractors.
+**Phase 2 — Federal grants.** Reads ~422,000 distinct recipient names from `fed.grants_contributions`. BN-anchors to Phase 1 entities where possible. Creates new BN-only entities for federal recipients not registered with CRA (government departments, universities, foreign organizations). For records with no usable BN, falls back to a name-matching cascade: exact match, then normalized match, then the TRADE-NAME and bilingual-pipe extractors.
 
-**Phase 3 — Alberta data.** Reads from the four Alberta tables: `ab_non_profit` (69K records), `ab_grants` (420K distinct recipient names), `ab_contracts` (11K), `ab_sole_source` (5K). AB data rarely contains BNs, so this stage is almost entirely name-based — exact-name match, then normalized-name match, then new-entity creation. A well-matched CRA/FED entity typically picks up 20–200+ Alberta source rows here.
+**Phase 3 — Alberta data.** Reads from the four Alberta tables: `ab_non_profit` (69K records), `ab_grants` (~453K distinct recipient names), `ab_contracts` (~11K), `ab_sole_source` (~5K). AB data rarely contains BNs, so this stage is almost entirely name-based — exact-name match, then normalized-name match, then new-entity creation. A well-matched CRA/FED entity typically picks up 20–200+ Alberta source rows here.
 
 **Phase 4 — Deterministic deduplication.** Two passes:
 - *Same-BN-root dedup:* any two entities sharing the same non-placeholder 9-digit BN root are collapsed into one. This correctly merges cases where CRA and FED each created a separate entity for the same BN before Phase 2 could link them.
@@ -69,7 +69,7 @@ Walks the six source tables in a carefully-chosen order, and for each record eit
 
 **Phase 5 — Enrichment.** Refreshes derived fields: source-link counts on each entity, normalized-name cache, dataset-coverage array.
 
-The output of Stage 2 is the `entities` table — roughly 800,000 rows — each linked via `entity_source_links` to every source record it absorbed.
+The output of Stage 2 is the `entities` table — roughly 925,000 rows before the LLM stage collapses duplicates — each linked via `entity_source_links` to every source record it absorbed.
 
 ### Stage 3 — Probabilistic matching with Splink (`05-run-splink.js` + `splink/`)
 
@@ -100,7 +100,7 @@ Collects duplicate pairs from five tiers into a staging table (`entity_merge_can
 - **Tier 4 — Trigram similarity.** Uses Postgres's `pg_trgm` extension (a GIN-indexed trigram model) to find name pairs with at least 65% character-trigram overlap. Catches typos and word-order variations.
 - **Tier 5 — Splink probabilistic matches.** Reads from `splink_predictions` (the output of Stage 3) and maps each Splink-paired source record back to our entity IDs. Pairs where Splink's confidence is in the 0.40–0.95 range are queued for LLM review. High-confidence pairs (≥0.95) would have already been caught by Tiers 1-4 or become candidates here for a safety check.
 
-On a typical run this produces ~1.5 million candidate pairs to review.
+On a typical run this produces ~1.6 million candidate pairs to review.
 
 ### Stage 5 — IDF keyword overlap (`07-smart-match.js`)
 
@@ -123,7 +123,7 @@ This stage is resumable across crashes and dashboard restarts. Workers claim can
 
 **Dual-provider support.** The LLM layer supports two providers concurrently: Anthropic's direct API and Google Vertex AI (both serving Claude Sonnet 4.6, but with independent rate-limit pools and billing). Running one process per provider in parallel doubles throughput and provides failover if one provider's quota is exhausted mid-run.
 
-On typical runs, Stage 6 processes ~1.5 million pairs over 6-8 hours at 25-33 pairs/second combined.
+On typical runs, Stage 6 processes ~1.6 million pairs over 6-8 hours at 25-33 pairs/second combined.
 
 ### Stage 7 — Golden record compile (`09-build-golden-records.js`)
 
@@ -138,7 +138,7 @@ For each active entity, this stage builds:
 - A `fed_profile` with total grants received, grant count, earliest/latest agreement dates, and top funding departments
 - An `ab_profile` with Alberta grant totals, contract totals, sole-source totals, top ministries
 
-The compile step is fast (2-5 minutes for ~800K records). It updates rather than replaces, so re-running safely refreshes stale derived fields.
+The compile step is fast (2-5 minutes for ~850K records). It updates rather than replaces, so re-running safely refreshes stale derived fields.
 
 ### Stage 8 — Donee-name trigram fallback (`10-donee-trigram-fallback.js`) — *Tier 6 enrichment*
 
@@ -231,12 +231,12 @@ One remaining wrinkle: CRA charities can choose *any* fiscal-year-end date, not 
 
 On a representative run with the current source data:
 
-- **~800,000 active entities** compiled from ~1.1 million source records across six tables
-- **~3.3 million source links** (one record linked per source row; an entity like the University of Alberta accumulates 2,400+ links across federal grants, Alberta grants, Alberta sole-source, and CRA filings)
-- **~40,000 multi-dataset entities** — organizations present in at least two of CRA/FED/AB. These are the high-value entities for accountability analysis: where does public money flow across jurisdictions.
-- **~50,000 LLM-confirmed SAME merges** — duplicate entities collapsed across sources
-- **~45,000 LLM-identified RELATED pairs** — cross-linked for contextual lookups (e.g., the University of Alberta's faculty of medicine is flagged as RELATED to the main University of Alberta entity, not merged)
-- **~1.1 million LLM DIFFERENT verdicts** — pairs the candidate-detection stages surfaced that turned out not to be the same organization, usefully recorded so they never get re-reviewed
+- **~851,000 active entities** compiled from ~1.1 million source records across six tables
+- **~5.2 million source links** (one record linked per source row; an entity like the University of Alberta accumulates 2,400+ links across federal grants, Alberta grants, Alberta sole-source, and CRA filings)
+- **~55,000 multi-dataset entities** — organizations present in at least two of CRA/FED/AB. These are the high-value entities for accountability analysis: where does public money flow across jurisdictions.
+- **~67,000 LLM-confirmed SAME merges** — duplicate entities collapsed across sources
+- **~65,000 LLM-identified RELATED pairs** — cross-linked for contextual lookups (e.g., the University of Alberta's faculty of medicine is flagged as RELATED to the main University of Alberta entity, not merged)
+- **~1.5 million LLM DIFFERENT verdicts** — pairs the candidate-detection stages surfaced that turned out not to be the same organization, usefully recorded so they never get re-reviewed
 
 Five test categories validate pipeline correctness after every run. The dashboard implements them as sanity cards that look up specific BNs on each poll:
 

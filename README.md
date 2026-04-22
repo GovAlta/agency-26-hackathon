@@ -4,7 +4,7 @@ A multi-dataset analysis platform for Canadian government transparency and accou
 
 ## Overview
 
-This repository unifies four major sources of Canadian government open data into a single PostgreSQL database, with each dataset in its own schema so tables never collide. On top of that raw data sits a **cross-dataset entity resolution pipeline** that reconciles ~1 million source records into ~800,000 canonical organizations, each with a golden record linking every funding stream across CRA charity filings, federal grants, and Alberta grants/contracts/sole-source.
+This repository unifies four major sources of Canadian government open data into a single PostgreSQL database, with each dataset in its own schema so tables never collide. On top of that raw data sits a **cross-dataset entity resolution pipeline** that reconciles ~1 million source records into ~851,000 canonical organizations, each with a golden record linking every funding stream across CRA charity filings, federal grants, and Alberta grants/contracts/sole-source.
 
 All data is redistributed under the original publishers' open-government licences — Canada Revenue Agency T3010 filings, federal Grants & Contributions disclosures, and Alberta open data. See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for data sources and third-party library credits.
 
@@ -15,7 +15,7 @@ All data is redistributed under the original publishers' open-government licence
 | **Node.js** | 18 or newer | Required by every module |
 | **Python** | 3.10 or newer | Required only for the Splink stage of the entity-resolution pipeline |
 | **PostgreSQL** | 14 or newer | With the `pg_trgm` extension enabled |
-| **Disk space** | ~2 GB | Full local database copy (CSV + loaded tables + indexes). Splink's intermediate parquet files add ~60 MB on top while that stage is running. |
+| **Disk space** | ~20 GB | Full local database copy (~13 GB JSONL data bundle + loaded tables + indexes). Splink's intermediate parquet files add ~60 MB on top while that stage is running. |
 | **Memory** | 4 GB minimum, 8 GB recommended | The Splink + LLM-pipeline stages benefit from more RAM; everything else is light. |
 
 ### Credentials
@@ -50,7 +50,7 @@ All four data modules share the same PostgreSQL database on Render (`cra`, `fed`
 
 ### CRA — Canada Revenue Agency T3010 Charity Data
 
-**Schema:** `cra` · **Rows:** ~8.6M (7.3M T3010 raw + ~1.3M pre-computed analysis) · **Tables:** 46 + 3 views · **Years:** 2020–2024
+**Schema:** `cra` · **Rows:** ~8.76M (7.3M T3010 raw + ~1.42M pre-computed analysis) · **Tables:** 49 + 3 views · **Years:** 2020–2024
 
 Annual filings from ~85,000 registered Canadian charities: financial statements, directors, gift flows between charities, program descriptions. Also includes pre-computed accountability-analysis tables (loop detection across 2–6 hops, SCC decomposition, overhead rollups, government-funding breakdown, T3010 data-quality violation flags, donee-name quality scoring).
 
@@ -74,7 +74,7 @@ Features: 7-dimension risk scoring (0–35), provincial-equity analysis, amendme
 
 ### AB — Alberta Open Data
 
-**Schema:** `ab` · **Rows:** ~2.57M · **Tables:** 9 + 3 views · **Years:** 2014–2026
+**Schema:** `ab` · **Rows:** ~2.61M · **Tables:** 9 + 3 views · **Years:** 2014–2026
 
 | Dataset | Table | Rows |
 |---------|-------|------|
@@ -91,9 +91,9 @@ Features: sole-source deep dive (repeat vendors, contract splitting, geographic 
 
 ### general — Cross-Dataset Entity Resolution
 
-**Schema:** `general` · **Rows:** ~6M · **Tables:** 13 + 2 views
+**Schema:** `general` · **Rows:** ~10.5M · **Tables:** 14 + 2 views
 
-The module that unifies everything else. Produces one canonical **golden record** per real-world organization, linked to every source row that contributed to it. After a full pipeline run: **~793K golden records**, ~3.3M source links, ~51K LLM-confirmed merges, ~45K RELATED cross-links.
+The module that unifies everything else. Produces one canonical **golden record** per real-world organization, linked to every source row that contributed to it. After a full pipeline run: **~851K golden records**, ~5.2M source links, ~67K LLM-confirmed merges, ~65K RELATED cross-links.
 
 ```bash
 cd general && npm install && npm run setup
@@ -141,7 +141,7 @@ If you need a full local copy of the hackathon database — either because you d
 │   ├── fed.sql
 │   ├── ab.sql
 │   └── general.sql
-└── data/           # CSV files, one per table (gitignored — hundreds of MB)
+└── data/           # JSONL files, one per table (gitignored — ~13 GB total)
     ├── cra/ fed/ ab/ general/
 ```
 
@@ -160,7 +160,7 @@ cd .local-db && npm install
 DB_CONNECTION_STRING=postgresql://admin:pass@render.com:5432/... npm run export
 ```
 
-Re-running `export` regenerates the schemas, manifest, and CSV data for all four schemas (including the latest entity-resolution pipeline output). The CSV data files in `.local-db/data/` are gitignored (~hundreds of MB); only the export/import code, DDL, and manifest travel with the repo.
+Re-running `export` regenerates the schemas, manifest, and JSONL data for all four schemas (including the latest entity-resolution pipeline output). JSONL was chosen over CSV so that `jsonb`, `text[]`, nulls, and strings with embedded newlines/commas/quotes round-trip without escaping games. The JSONL data files in `.local-db/data/` are gitignored (~13 GB total); only the export/import code, DDL, and manifest travel with the repo.
 
 ## Environment Configuration
 
@@ -212,7 +212,7 @@ Credentials are in each module's `.env.public`, distributed by the hackathon org
 
 **Option B — local full copy** (for running the full pipeline or needing write access):
 
-Use `.local-db/` to recreate the database in your own Postgres instance. Run `.local-db/export.js` against the shared Render DB to produce fresh CSVs, then `.local-db/import.js` to reload into your local DB. See [.local-db/README.md](.local-db/README.md) for details.
+Use `.local-db/` to recreate the database in your own Postgres instance. Run `.local-db/export.js` against the shared Render DB to produce fresh JSONL files, then `.local-db/import.js` to reload into your local DB. See [.local-db/README.md](.local-db/README.md) for details.
 
 **Schemas:** `cra`, `fed`, `ab`, `general` (`search_path` set via each module's `lib/db.js`).
 

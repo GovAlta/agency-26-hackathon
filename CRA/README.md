@@ -10,12 +10,12 @@ A complete, reproducible data pipeline that downloads, transforms, and loads **5
 
 | Metric | Value |
 |--------|-------|
-| **Total rows loaded** | ~8.6M (7.3M T3010 raw + ~1.3M pre-computed analysis) |
+| **Total rows loaded** | ~8.76M (7.3M T3010 raw + ~1.42M pre-computed analysis) |
 | **T3010 raw-data rows** | ~7.3M |
 | **Fiscal years** | 2020, 2021, 2022, 2023, 2024 |
 | **Registered charities per year** | ~72,000 – 85,000 |
 | **Dataset categories** | 19 per year (93 total, some years missing disbursement_quota) |
-| **Database tables** | 46 + 3 views (6 lookup + 19 raw-data + 21 pre-computed analysis) |
+| **Database tables** | 49 + 3 views (6 lookup + 19 raw-data + 24 pre-computed analysis) |
 | **Data source** | Canada Revenue Agency T3010 via Government of Canada Open Data API |
 
 ### Important Note on 2024 Data
@@ -35,7 +35,7 @@ This project uses a two-tier access model:
 | `.env.public` | Yes | **Read-only** (SELECT only) | Hackathon participants, AI agents |
 | `.env` | No (gitignored) | **Full admin** (read/write) | Data pipeline operators |
 
-**Participants:** After obtaining a read-only `.env.public` (distributed out-of-band — see [SECURITY.md](../SECURITY.md)) and running `npm install`, you can immediately query ~8.6M rows of CRA data (7.3M T3010 raw data plus ~1.3M pre-computed accountability-analysis tables). No setup or data loading required.
+**Participants:** After obtaining a read-only `.env.public` (distributed out-of-band — see [SECURITY.md](../SECURITY.md)) and running `npm install`, you can immediately query ~8.76M rows of CRA data (7.3M T3010 raw data plus ~1.42M pre-computed accountability-analysis tables). No setup or data loading required.
 
 **Administrators:** Use `.env` with admin credentials to load data or manage the schema. To rotate the read-only credentials:
 ```bash
@@ -65,7 +65,7 @@ Or step by step:
 
 ```bash
 npm install
-npm run migrate          # Creates cra schema, 6 lookup + 19 data + 10 analysis tables + 3 views
+npm run migrate          # Creates cra schema, 6 lookup + 19 data + 24 analysis tables + 3 views
 npm run seed             # Load 620 lookup rows
 npm run fetch            # Download 2020-2024 from Government of Canada Open Data API (93 datasets)
 npm run import           # Load cached JSON into PostgreSQL (7,338,550 rows)
@@ -799,7 +799,7 @@ On completion you will have:
 | File | What's in it |
 |---|---|
 | `data/reports/data-quality/donee-bn-name-mismatches.md` | $8.97B un-joinable gifts across four categories; malformed-BN defect taxonomy; case studies including the 434 `Toronto`-BN Jewish Foundation filing and the Calgary Foundation FY 2020 + FY 2022 `Sec. 149.1(1)` pattern |
-| `data/reports/data-quality/t3010-arithmetic-impossibilities.md` | 10 rules × their form/dictionary citations; **30,988 distinct BNs** flagged; top-20 violators per rule with full BN + FY + legal name + field values |
+| `data/reports/data-quality/t3010-arithmetic-impossibilities.md` | 10 rules × their form/dictionary citations; **30,856 distinct BNs** flagged; top-20 violators per rule with full BN + FY + legal name + field values |
 | `data/reports/data-quality/identification-backfill-check.md` | Only 0.86% of BNs have any legal-name variation across 2020–2024; 6 of 7 spot-checked rebrands have the pre-rebrand name completely erased from `cra_identification` |
 
 Each report's JSON counterpart (`.json`) is identical content in
@@ -818,8 +818,8 @@ rerunning the scripts.
 | Gift records flagged (PLACEHOLDER / MALFORMED / UNREGISTERED / NAME_MISMATCH) | **260,102** |
 | Dollars on flagged records                                   | **\$8.97B** (13.41% of all gifts) |
 | Of which `MALFORMED_BN` (BN format violations)               | \$1.95B |
-| Total T3010 arithmetic-identity violations (10 rules)        | **53,916** rows |
-| Distinct BNs with ≥ 1 arithmetic violation                   | **30,988** |
+| Total T3010 arithmetic-identity violations (10 rules)        | **54,010** rows |
+| Distinct BNs with ≥ 1 arithmetic violation                   | **30,856** |
 | BNs in `cra_identification` showing any name variation across 5 years | **0.86%** (784 / 91,129) |
 | Known rebrands where pre-rebrand name is still recoverable   | **1 of 7 spot-checks** |
 

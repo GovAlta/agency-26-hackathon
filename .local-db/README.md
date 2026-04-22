@@ -128,10 +128,10 @@ done
 
 | Schema | Tables + views | Approx rows | Description |
 |--------|----------------|-------------|-------------|
-| `cra` | 49 tables + 3 views | ~7.6M | CRA T3010 charity filings (2020-2024), plus accountability-analysis tables (loop detection, SCC decomposition, overhead/government-funding rollups, T3010 violation flags, donee-quality scoring) |
-| `fed` | 6 tables + 3 views | ~1.3M | Federal grants and contributions |
-| `ab` | 9 tables + 3 views | ~2.6M | Alberta grants, contracts, sole-source, non-profit registry |
-| `general` | 14 tables + 2 views | ~9.8M | **Cross-dataset entity resolution pipeline output**, including `entities` (golden records), `entity_source_links`, `entity_golden_records` (final compiled table), `entity_merge_candidates`, `entity_merges`, `entity_resolution_log`, `ministries`/`ministries_crosswalk`/`ministries_history`, and the Splink probabilistic-matching tables (`splink_predictions`, `splink_aliases`, `splink_build_metadata`). See `/general/README.md` for the full pipeline. |
+| `cra` | 49 tables + 3 views | ~8.76M | CRA T3010 charity filings (2020-2024), plus accountability-analysis tables (loop detection, SCC decomposition, overhead/government-funding rollups, T3010 violation flags, donee-quality scoring) |
+| `fed` | 6 tables + 3 views | ~1.28M | Federal grants and contributions |
+| `ab` | 9 tables + 3 views | ~2.61M | Alberta grants, contracts, sole-source, non-profit registry |
+| `general` | 14 tables + 2 views | ~10.46M | **Cross-dataset entity resolution pipeline output**, including `entities` (golden records), `entity_source_links`, `entity_golden_records` (final compiled table), `entity_merge_candidates`, `entity_merges`, `entity_resolution_log`, `ministries`/`ministries_crosswalk`/`ministries_history`, and the Splink probabilistic-matching tables (`splink_predictions`, `splink_aliases`, `splink_build_metadata`). See `/general/README.md` for the full pipeline. |
 
 Both `export.js` and `import.js` auto-discover tables via `information_schema` — no code change is needed when new tables are added to any schema. A re-run regenerates the manifest, DDL files, and JSONL data automatically. The export also captures sequences (with `nextval(...)` defaults preserved), all PRIMARY KEY / UNIQUE / CHECK / FOREIGN KEY constraints, and sequence `setval()` statements so the recreated database is a faithful clone.
 
